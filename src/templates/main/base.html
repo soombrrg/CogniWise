@@ -1,0 +1,350 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CogniWise{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.14.8/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js" integrity="sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+        :root {
+            --primary-dark: #0a0f1d;
+            --primary: #0f172a;
+            --accent: #10b981;
+            --accent-light: #34d399;
+            --accent-dark: #059669;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--primary-dark);
+            color: #e2e8f0;
+        }
+
+        .soft-neon-text {
+            color: #d1fae5;
+            text-shadow:
+                0 0 3px rgba(16, 185, 129, 0.7),
+                0 0 6px rgba(16, 185, 129, 0.4);
+        }
+
+        .soft-neon-border {
+            box-shadow:
+                0 0 3px rgba(16, 185, 129, 0.5),
+                0 0 6px rgba(16, 185, 129, 0.3),
+                inset 0 0 3px rgba(16, 185, 129, 0.3);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .soft-neon-glow {
+            filter: drop-shadow(0 0 2px rgba(16, 185, 129, 0.5));
+        }
+
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .orbitron-font {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 500;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+        }
+
+        .course-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: #1e293b;
+            border: 1px solid #334155;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .hero-pattern {
+            background-color: var(--primary-dark);
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2310b981' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .soft-glow-button {
+            background: #1e293b;
+            color: var(--accent-light);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .soft-glow-button:hover {
+            background: rgba(16, 185, 129, 0.15);
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+        }
+
+        .soft-glow-icon {
+            box-shadow: 0 0 6px rgba(16, 185, 129, 0.5), 0 0 10px rgba(16, 185, 129, 0.2), inset 0 0 5px rgba(16, 185, 129, 0.2);
+        }
+
+        .soft-float {
+            animation: softFloat 8s ease-in-out infinite;
+        }
+
+        @keyframes softFloat {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .soft-fade-in {
+            animation: softFadeIn 2s ease-in;
+        }
+
+        @keyframes softFadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            background-image: linear-gradient(90deg, var(--accent-light), #6ee7b7);
+        }
+
+        .pricing-card {
+            transition: all 0.3s ease;
+            background: linear-gradient(145deg, #1a253a, #1e293b);
+            border: 1px solid #334155;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .pricing-card.featured {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .feedback-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-card:hover {
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #334155;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 300px;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(180deg);
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .transition-margin {
+            transition: margin 0.3s ease;
+        }
+
+        .bg-slate-800\/50 {
+            background-color: rgba(30, 41, 59, 0.5);
+        }
+
+    </style>
+</head>
+<body class="min-h-screen" x-data="{ sidebarOpen: false, activeSection: 'home', activeContent: '' }">
+    <!-- Navigation -->
+    <header>
+        <nav x-data="{ open: false }" class="fixed w-full bg-slate-900 bg-opacity-90 backdrop-blur-md shadow-lg z-50 soft-neon-border">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <a href="#" class="flex-shrink-0 flex items-center">
+                            <div class="h-10 w-10 rounded-md bg-slate-800 flex items-center justify-center soft-neon-border soft-glow-icon">
+                                <i class="fas fa-code text-emerald-300 text-xl soft-neon-glow"></i>
+                            </div>
+                            <span class="ml-3 text-xl font-bold code-font soft-neon-text">CogniWise</span>
+                        </a>
+                        <div class="hidden md:ml-6 md:flex md:space-x-8">
+                            <a href="#courses" class="border-transparent text-slate-400 hover:border-emerald-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Курсы</a>
+                            <a href="#pricing" class="border-transparent text-slate-400 hover:border-emerald-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Тарифы</a>
+                            <a href="#feedbacks" class="border-transparent text-slate-400 hover:border-emerald-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Отзывы</a>
+                            <a href="#faq" class="border-transparent text-slate-400 hover:border-emerald-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">FAQ</a>
+                            <a href="#" class="border-transparent text-slate-400 hover:border-emerald-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Блог</a>
+                        </div>
+                    </div>
+                    <div class="hidden md:flex items-center">
+                        <button class="soft-glow-button px-4 py-2 rounded-md text-sm font-medium">
+                            <i class="fas fa-user-circle mr-2"></i>Войти
+                        </button>
+                    </div>
+                    <div class="-mr-2 flex items-center md:hidden">
+                        <button @click="open = !open" class="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-emerald-300 soft-neon-border">
+                            <i :class="open ? 'fa-times' : 'fa-bars'" class="fas text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="md:hidden soft-neon-border mt-2">
+                <div class="pt-2 pb-3 space-y-1 bg-slate-900 bg-opacity-90">
+                    <a href="#" class="text-slate-400 hover:bg-slate-800 hover:text-white block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium">Курсы</a>
+                    <a href="#pricing" class="text-slate-400 hover:bg-slate-800 hover:text-white block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium">Тарифы</a>
+                    <a href="#feedbacks" class="text-slate-400 hover:bg-slate-800 hover:text-white block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium">Отзывы</a>
+                    <a href="#faq" class="text-slate-400 hover:bg-slate-800 hover:text-white block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium">FAQ</a>
+                    <a href="#" class="text-slate-400 hover:bg-slate-800 hover:text-white block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium">Блог</a>
+                    <a href="#" class="text-slate-400 hover:bg-slate-800 hover:text-white block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium">
+                        <i class="fas fa-user-circle mr-2"></i>Войти
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    {% block content %}
+    	<h1>Base</h1>
+    {% endblock content%}
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 pt-12 pb-8 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-white text-lg font-bold code-font soft-neon-text">CogniWise</h3>
+                    <p class="mt-4 text-slate-400">Обучаем программированию с 2018 года. Помогаем сменить профессию и начать карьеру в IT.</p>
+                    <div class="mt-4 flex space-x-4">
+                        <a href="#" class="text-slate-400 hover:text-teal-300 transition duration-300">
+                            <i class="fab fa-vk text-lg"></i>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-teal-300 transition duration-300">
+                            <i class="fab fa-telegram text-lg"></i>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-teal-300 transition duration-300">
+                            <i class="fab fa-youtube text-lg"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold orbitron-font">Курсы</h4>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="#" class="text-slate-400 hover:text-teal-300 transition duration-300">Python</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-teal-300 transition duration-300">JavaScript</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-teal-300 transition duration-300">Java</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-teal-300 transition duration-300">Веб-разработка</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-teal-300 transition duration-300">Data Science</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold orbitron-font">Компания</h4>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="#" class="text-slate-400 hover:text-teal-300 transition duration-300">О нас</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-teal-300 transition duration-300">Преподаватели</a></li>
+                        <li><a href="#feedbacks" class="text-slate-400 hover:text-teal-300 transition duration-300">Отзывы</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-teal-300 transition duration-300">Контакты</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold orbitron-font">Контакты</h4>
+                    <ul class="mt-4 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-envelope text-teal-300 mt-1 mr-2"></i>
+                            <span class="text-slate-400">info@cogniwise.ru</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-phone-alt text-teal-300 mt-1 mr-2"></i>
+                            <span class="text-slate-400">+375 (29) 123-45-67</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-teal-300 mt-1 mr-2"></i>
+                            <span class="text-slate-400">Минск, ул. Пушкина, 15</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-12 pt-8 border-t border-slate-800 text-center text-slate-400 text-sm">
+                <p>© 2025 CogniWise. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <script type="application/javascript">
+        gsap.registerPlugin(ScrollTrigger);
+        document.addEventListener('DOMContentLoaded', function() {
+
+        // Анимация hero header
+        gsap.from('.hero-pattern', {
+            opacity: 0,
+            duration: 1,
+            ease: "power2.out"
+        });
+
+        // Анимация тарифов
+        gsap.utils.toArray('.pricing-card').forEach(card => {
+            gsap.fromTo(card, {
+                scale: 0.9,
+                opacity: 0
+            }, {
+                scale: 1,
+                opacity: 1,
+                duration: 0.6,
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                }
+            });
+        });
+
+        // Пульсирующее свечение для кнопок
+        gsap.to('.soft-glow-button', {
+            boxShadow: "0 0 15px rgba(16, 185, 129, 0.6)",
+            duration: 1.5,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut"
+        });
+    });
+    </script>
+</body>
+</html>

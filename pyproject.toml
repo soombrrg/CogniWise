@@ -1,0 +1,38 @@
+[project]
+name = "django-basics"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "django>=5.2.5",
+    "django-behaviors>=0.5.1",
+    "django-environ>=0.12.0",
+    "djangorestframework>=3.16.1",
+    "pillow>=11.3.0",
+    "psycopg2-binary>=2.9.10",
+    "uvicorn>=0.35.0",
+    "whitenoise>=6.9.0",
+]
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "flake8>=7.3.0",
+    "flake8-bandit>=4.1.1",
+    "flake8-django>=1.1.1",
+    "flake8-isort>=6.1.2",
+    "flake8-pyproject>=1.2.3",
+    "flake8-walrus>=1.2.0",
+    "isort>=6.0.1",
+    "mixer>=7.2.2",
+    "mypy>=1.17.1",
+    "pytest>=8.4.1",
+    "pytest-django>=4.11.1",
+]
+
+[tool.flake8]
+ignore = ["E501",]
+
+[tool.mypy]
+ignore_missing_imports = true
