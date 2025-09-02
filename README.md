@@ -9,6 +9,10 @@ env = environ.FileAwareEnv()
 ```
 and delete
 ```
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 environ.Env.read_env(BASE_DIR / ".env")
 ```
 
