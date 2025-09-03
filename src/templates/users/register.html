@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="min-h-screen bg-slate-900 pt-20">
+    <div class="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Логотип и заголовок -->
+        <div class="text-center mb-8">
+            <div class="mx-auto w-16 h-16 rounded-md bg-slate-800 flex items-center justify-center soft-neon-border soft-pulse mb-4">
+                <i class="fas fa-code text-emerald-300 text-2xl soft-neon-glow"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-white orbitron-font soft-neon-text mb-2">
+                Присоединяйтесь к CodeCraft
+            </h1>
+            <p class="text-slate-400">Создайте аккаунт и начните обучение</p>
+        </div>
+
+        <!-- Форма регистрации -->
+        <div class="bg-slate-800/50 backdrop-blur-md rounded-2xl p-8 soft-neon-border">
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <div class="bg-rose-900/50 border border-rose-600 rounded-lg p-4">
+                    <p class="text-rose-300 text-sm">{{ form.non_field_errors }}</p>
+                </div>
+                {% endif %}
+
+                <!-- Имя и Фамилия -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
+                            {{ form.first_name.label }}
+                        </label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                        <p class="mt-1 text-rose-400 text-sm">{{ form.first_name.errors }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
+                            {{ form.last_name.label }}
+                        </label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                        <p class="mt-1 text-rose-400 text-sm">{{ form.last_name.errors }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
+                        {{ form.email.label }}
+                    </label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                    <p class="mt-1 text-rose-400 text-sm">{{ form.email.errors }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Пароль -->
+                <div>
+                    <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
+                        {{ form.password1.label }}
+                    </label>
+                    {{ form.password1 }}
+                    {% if form.password1.errors %}
+                    <p class="mt-1 text-rose-400 text-sm">{{ form.password1.errors }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Подтверждение пароля -->
+                <div>
+                    <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
+                        {{ form.password2.label }}
+                    </label>
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}
+                    <p class="mt-1 text-rose-400 text-sm">{{ form.password2.errors }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Кнопка регистрации -->
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-lg transition duration-300 transform hover:scale-[1.02] soft-neon-glow">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Создать аккаунт
+                </button>
+            </form>
+
+            <!-- Разделитель -->
+            <div class="relative my-6">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-slate-600"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-slate-800 text-slate-400">Уже есть аккаунт?</span>
+                </div>
+            </div>
+
+            <!-- Ссылка на вход -->
+            <div class="text-center">
+                <a href="{% url 'users:login' %}" class="inline-flex items-center text-emerald-300 hover:text-emerald-200 transition duration-300">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Войти в существующий аккаунт
+                </a>
+            </div>
+        </div>
+
+        <!-- Дополнительная информация -->
+        <div class="mt-8 text-center">
+            <p class="text-slate-400 text-sm">
+                Регистрируясь, вы соглашаетесь с нашими
+                <a href="#" class="text-emerald-300 hover:text-emerald-200 transition duration-300">Условиями использования</a>
+                и
+                <a href="#" class="text-emerald-300 hover:text-emerald-200 transition duration-300">Политикой конфиденциальности</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

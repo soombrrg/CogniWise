@@ -55,6 +55,8 @@ INSTALLED_APPS = [
     "whitenoise",
     # projects app
     "main",
+    "users",
+    "orders",
 ]
 
 MIDDLEWARE = [
@@ -98,9 +100,9 @@ DATABASES = {
         "ATOMIC_REQUESTS": True,
     }
 }
-# CACHES = {
-#     "redis": env.cache_url('REDIS_URL'),
-# }
+CACHES = {
+    "default": env.cache_url("REDIS_URL"),
+}
 
 
 # Password validation
@@ -125,7 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "ru"
 
 TIME_ZONE = "UTC"
 
@@ -146,7 +148,12 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# CART_SESSION_ID = "cart"
+# Custom Authentication
+AUTH_USER_MODEL = "users.CustomUser"
+
+LOGIN_URL = "users:login"
+LOGIN_REDIRECT_URL = "users:profile"
+LOGOUT_REDIRECT_URL = "main:home"
 
 # Security settings
 # SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
