@@ -33,7 +33,24 @@ dev = [
 ]
 
 [tool.flake8]
-ignore = ["E501",]
+extend-select = ["I",]
+ignore = ["E501", "W503", "DJ01", "S308", "S703"]
+exclude = [
+    "test_*.py",
+    "*test_*.py",
+    "conftest.py",
+    "*/tests/",
+    "*/migrations/*",
+    ".git/",
+]
 
 [tool.mypy]
 ignore_missing_imports = true
+exclude = [
+    "tests/*",
+    "migrations/*",
+]
+
+[tool.isort]
+profile = "black"
+line_length = 88

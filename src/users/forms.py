@@ -1,10 +1,10 @@
 from django import forms
+from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.forms import (
-    UserCreationForm,
     AuthenticationForm,
     PasswordChangeForm,
+    UserCreationForm,
 )
-from django.contrib.auth import get_user_model, authenticate
 
 User = get_user_model()
 

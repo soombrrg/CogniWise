@@ -1,7 +1,6 @@
 import re
 
 import pytest
-from django.http import HttpResponse
 
 pytestmark = [pytest.mark.django_db]
 

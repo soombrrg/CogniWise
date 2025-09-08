@@ -2,7 +2,6 @@ deps:
 	uv sync
 
 lint:
-	isort src
 	black src
 	mypy src
 	flake8 src

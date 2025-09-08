@@ -5,8 +5,8 @@ from uuid import uuid4
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseNotAllowed, HttpResponseBadRequest, HttpResponse
-from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from yookassa import Configuration, Payment
@@ -172,7 +172,7 @@ def yookassa_webhook(request):
         logger.error("Ошибка декодирования JSON: %s", str(e))
         return HttpResponseBadRequest("Неверный JSON")
     except Order.DoesNotExist:
-        logger.error(f"Заказ не найден: order_id=%s, user_id=%s", order_id, user_id)
+        logger.error("Заказ не найден: order_id=%s, user_id=%s", order_id, user_id)
         return HttpResponseBadRequest("Заказ не найден")
     except Exception as e:
         logger.error(f"Неожиданная ошибка: {str(e)}")

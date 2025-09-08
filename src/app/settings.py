@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 
-from django.conf.global_settings import STATICFILES_DIRS
 from environ import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -173,6 +172,6 @@ YOOKASSA_SECRET_KEY = os.getenv("YOOKASSA_SECRET_KEY")
 YOOKASSA_VAT_CODE = os.getenv("YOOKASSA_VAT_CODE")
 
 # Initializing Yookassa
-from yookassa import Configuration
+from yookassa import Configuration  # noqa
 
 Configuration.configure(YOOKASSA_SHOP_ID, YOOKASSA_SECRET_KEY)

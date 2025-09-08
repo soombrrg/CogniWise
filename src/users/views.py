@@ -2,17 +2,15 @@ from django.contrib import messages
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 
 from orders.models import Order
 from users.forms import (
     CustomUserCreationForm,
     CustomUserLoginForm,
-    CustomUserUpdateForm,
     CustomUserPasswordChangeForm,
+    CustomUserUpdateForm,
 )
-
-
 from users.models import CustomUser
 
 

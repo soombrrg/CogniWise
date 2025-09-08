@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from main.models import SubBlock, Block, Course
+from main.models import Block, Course, SubBlock
 
 
 class BlockInlineBase(admin.StackedInline):

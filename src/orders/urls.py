@@ -1,6 +1,6 @@
 from django.urls import path
 
-from orders.views import checkout, yookassa_webhook, yookassa_success, yookassa_cancel
+from orders.views import checkout, yookassa_cancel, yookassa_success, yookassa_webhook
 
 app_name = "orders"
 

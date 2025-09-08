@@ -1,7 +1,8 @@
+import html
+import re
+
 from django import template
 from django.utils.safestring import mark_safe
-import re
-import html
 
 register = template.Library()
 

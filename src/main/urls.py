@@ -1,14 +1,14 @@
 from django.urls import path
 
 from main.views import (
-    home_view,
     about_view,
-    reviews_view,
-    pricing_view,
-    course_list_view,
     course_detail_view,
-    load_next_content,
+    course_list_view,
+    home_view,
     load_content,
+    load_next_content,
+    pricing_view,
+    reviews_view,
 )
 
 app_name = "main"
