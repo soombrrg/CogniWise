@@ -13,6 +13,7 @@ dependencies = [
     "psycopg2-binary>=2.9.10",
     "uvicorn>=0.35.0",
     "whitenoise>=6.9.0",
+    "yookassa>=3.7.0",
 ]
 
 [dependency-groups]

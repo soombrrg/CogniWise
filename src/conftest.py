@@ -1,7 +1,7 @@
 import pytest
 from mixer.backend.django import mixer as _mixer
 
-from app.test.api_clients import AppTestClient
+from app.tests.api_clients import AppTestClient
 
 
 @pytest.fixture

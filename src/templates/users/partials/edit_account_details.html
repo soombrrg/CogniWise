@@ -7,33 +7,12 @@
         </h1>
     </div>
 
-    <!-- Сообщения -->
-    {% if messages %}
-        {% for message in messages %}
-            {% if forloop.last %}
-                {% if 'danger' in message.tags %}
-                <div class="bg-rose-900/50 border border-rose-600 rounded-xl p-4 mb-6 soft-neon-border">
-                    <div class="flex items-center">
-                        <i class="fas fa-exclamation-circle text-rose-300 mr-3"></i>
-                        <span class="text-rose-300">{{ message }}</span>
-                    </div>
-                </div>
-                {% elif 'success' in message.tags %}
-                <div class="bg-emerald-900/50 border border-emerald-600 rounded-xl p-4 mb-6 soft-neon-border">
-                    <div class="flex items-center">
-                        <i class="fas fa-check-circle text-emerald-300 mr-3"></i>
-                        <span class="text-emerald-300">{{ message }}</span>
-                    </div>
-                </div>
-                {% endif %}
-            {% endif %}
-        {% endfor %}
-    {% endif %}
+    {% include 'users/partials/messages.html' %}
 
     <!-- Форма редактирования -->
     <form hx-post="{% url 'users:update-account-details' %}" hx-target="#content-profile" hx-boost="true" hx-include="this" hx-trigger="submit" enctype="multipart/form-data" class="space-y-6 bg-slate-800/50 backdrop-blur-md rounded-2xl p-6 soft-neon-border">
         {% csrf_token %}
-
+        <!-- TODO -->
         <!-- Аватар -->
         <div>
             <label class="block text-sm font-medium text-slate-300 mb-2">Аватар</label>
@@ -89,17 +68,8 @@
             {% endif %}
         </div>
 
-        <div>
-            <label for="id_username" class="block text-sm font-medium text-slate-300 mb-2">Имя пользователя</label>
-            <input type="text" name="username" id="id_username"
-                   value="{{ form.username.value|default:'' }}"
-                   class="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition duration-300 soft-neon-border"
-                   placeholder="Уникальное имя пользователя">
-            {% if form.username.errors %}
-            <p class="text-rose-400 text-xs mt-1">{{ form.username.errors.0 }}</p>
-            {% endif %}
-        </div>
 
+        <!--TODO-->
         <!-- Дополнительные поля профиля -->
         <div class="border-t border-slate-600/50 pt-6 mt-6">
             <h3 class="text-lg font-medium text-white orbitron-font mb-4 flex items-center">

@@ -1,0 +1,31 @@
+<!-- Настройки -->
+<div class="bg-slate-800/50 backdrop-blur-md rounded-2xl p-6 soft-neon-border">
+    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+        <i class="fas fa-cog mr-2 text-emerald-300"></i>
+        Настройки
+    </h3>
+    <nav class="space-y-2">
+        <a href="{% url 'users:profile' %}" class="flex items-center px-3 py-2 text-slate-300 hover:text-emerald-300 hover:bg-slate-700/50 rounded-lg transition duration-300">
+            <i class="fas fa-user mr-3 w-5"></i>
+            Профиль
+        </a>
+        <button hx-get="{% url 'users:edit-account-details' %}" hx-target="#content-profile" hx-swap="innerHTML" hx-indicator="#spinner1" class="flex items-center px-3 py-2 text-slate-300 hover:text-emerald-300 hover:bg-slate-700/50 rounded-lg transition duration-300">
+            <i class="fas fa-user-edit mr-3 w-5"></i>
+            Редактировать профиль
+            <span id="spinner1" class="htmx-indicator ml-2">
+                <i class="fas fa-spinner fa-spin text-emerald-300"></i>
+            </span>
+        </button>
+        <button hx-get="{% url 'users:change-password' %}" hx-target="#content-profile" hx-swap="innerHTML" hx-indicator="#spinner2" class="flex items-center px-3 py-2 text-slate-300 hover:text-emerald-300 hover:bg-slate-700/50 rounded-lg transition duration-300">
+            <i class="fas fa-lock mr-3 w-5"></i>
+            Сменить пароль
+            <span id="spinner2" class="htmx-indicator ml-2">
+                <i class="fas fa-spinner fa-spin text-emerald-300"></i>
+            </span>
+        </button>
+        <a href="{% url 'users:logout' %}" class="flex items-center px-3 py-2 text-rose-300 hover:text-rose-200 hover:bg-rose-900/20 rounded-lg transition duration-300">
+            <i class="fas fa-sign-out-alt mr-3 w-5"></i>
+            Выйти
+        </a>
+    </nav>
+</div>

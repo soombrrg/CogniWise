@@ -1,0 +1,22 @@
+<!-- Сообщения -->
+{% if messages %}
+    {% for message in messages %}
+        {% if forloop.last %}
+            {% if 'danger' in message.tags %}
+            <div class="bg-rose-900/50 border border-rose-600 rounded-xl p-4 mb-6 soft-neon-border">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-circle text-rose-300 mr-3"></i>
+                    <span class="text-rose-300">{{ message }}</span>
+                </div>
+            </div>
+            {% elif 'success' in message.tags %}
+            <div class="bg-emerald-900/50 border border-emerald-600 rounded-xl p-4 mb-6 soft-neon-border">
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle text-emerald-300 mr-3"></i>
+                    <span class="text-emerald-300">{{ message }}</span>
+                </div>
+            </div>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endif %}

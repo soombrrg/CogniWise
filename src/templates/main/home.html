@@ -101,9 +101,11 @@
                                 <p class="text-xs text-slate-400">Senior Python Developer</p>
                             </div>
                         </div>
-                        <button class="mt-6 w-full soft-glow-button py-2 px-4 rounded-md">
-                            Подробнее о курсе
-                        </button>
+                        <a href="{% url 'main:course_detail' 1 %}">
+                            <button class="mt-6 w-full soft-glow-button py-2 px-4 rounded-md">
+                                Подробнее о курсе
+                            </button>
+                        </a>
                     </div>
                 </div>
 
@@ -133,9 +135,11 @@
                                 <p class="text-xs text-slate-400">Full-stack Developer</p>
                             </div>
                         </div>
-                        <button class="mt-6 w-full soft-glow-button py-2 px-4 rounded-md">
-                            Подробнее о курсе
-                        </button>
+                        <a href="{% url 'main:course_detail' 1 %}">
+                            <button class="mt-6 w-full soft-glow-button py-2 px-4 rounded-md">
+                                Подробнее о курсе
+                            </button>
+                        </a>
                     </div>
                 </div>
 
@@ -415,10 +419,10 @@
                 <div class="feedback-card rounded-xl p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <img class="h-12 w-12 rounded-full" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Favatars.dzeninfra.ru%2Fget-zen_doc%2F271828%2Fpub_67a881d2c736f0441191e6fe_67a881d5fd14504bfec1f80a%2Fsmart_crop_516x290&f=1&nofb=1&ipt=3d2542e06a9461c101a06bb89ad0a752de3de10b7b401627a322fba04f39ea52" alt="Илья">
+                            <img class="h-12 w-12 rounded-full" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Favatars.dzeninfra.ru%2Fget-zen_doc%2F271828%2Fpub_67a881d2c736f0441191e6fe_67a881d5fd14504bfec1f80a%2Fsmart_crop_516x290&f=1&nofb=1&ipt=3d2542e06a9461c101a06bb89ad0a752de3de10b7b401627a322fba04f39ea52" alt="Дмитрий">
                         </div>
                         <div class="ml-4">
-                            <h4 class="text-lg font-bold text-white">Илья Ч.</h4>
+                            <h4 class="text-lg font-bold text-white">Дмитрий П.</h4>
                             <div class="mt-1 flex items-center">
                                 <div class="flex text-emerald-300">
                                     <i class="fas fa-star"></i>
@@ -431,7 +435,7 @@
                         </div>
                     </div>
                     <p class="mt-4 text-slate-300">
-                        "Сомневался, стоит ли начинать. Но, как и с кубинской сигарой — главное сделать первую затяжку. Результат превзошел все ожидания!"
+                        "Вот вам, скажу откровенно: никогда не думал, что в мои годы смогу разобраться в программировании. Благодаря доступным материалам и поддержке кураторов как говорится, подковался в ещё одной области — теперь могу не только фильмы переводить, но и с технологиями на "ты"."
                     </p>
                 </div>
             </div>
@@ -447,10 +451,10 @@
             <h2 class="text-3xl font-extrabold text-white orbitron-font soft-neon-text">Готовы начать карьеру в IT?</h2>
             <p class="mt-4 text-lg text-teal-200">Присоединяйтесь к более чем 2000 студентов, которые уже обучаются у нас</p>
             <div class="mt-8 flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <a href="#" class="soft-glow-button font-bold py-3 px-8 rounded-lg text-lg">
+                <a href="{% url 'main:courses_list' %}" class="soft-glow-button font-bold py-3 px-8 rounded-lg text-lg">
                     Выбрать курс
                 </a>
-                <a href="#" class="bg-transparent border border-teal-300 text-teal-300 hover:bg-teal-300/10 font-bold py-3 px-8 rounded-lg transition duration-300 text-lg">
+                <a href="{% url 'main:about' %}" class="bg-transparent border border-teal-300 text-teal-300 hover:bg-teal-300/10 font-bold py-3 px-8 rounded-lg transition duration-300 text-lg">
                     Получить консультацию
                 </a>
             </div>
@@ -572,7 +576,7 @@
 
             <div class="mt-12 text-center">
                 <p class="text-slate-400">Остались вопросы?</p>
-                <a href="#" class="mt-4 inline-flex items-center text-lg font-medium text-emerald-300 hover:text-emerald-200 transition duration-300">
+                <a href="{% url 'main:about' %}" class="mt-4 inline-flex items-center text-lg font-medium text-emerald-300 hover:text-emerald-200 transition duration-300">
                     Напишите нам
                     <i class="fas fa-arrow-right ml-2"></i>
                 </a>

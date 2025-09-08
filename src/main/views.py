@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 
 from main.models import Course, Block, SubBlock
+from orders.models import Order
 
 
 def home_view(request):
@@ -30,10 +31,10 @@ def course_list_view(request):
 @login_required
 def course_detail_view(request, course_id):
     course = get_object_or_404(Course, id=course_id)
-    # if not Order.objects.filter(
-    #     user=request.user, course=course, status="completed"
-    # ).exists():
-    #     return render(request, "main/access_denied.html", {"course": course})
+    if not Order.objects.filter(
+        user=request.user, course=course, status="completed"
+    ).exists():
+        return render(request, "main/access_denied.html", {"course": course})
 
     first_block = course.blocks.order_by("order").first()
     first_subblock = (

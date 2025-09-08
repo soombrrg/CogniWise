@@ -7,11 +7,11 @@
     style="opacity: 1 !important;">
     {% if content_type == 'block' %}
         <h2 class="text-lg sm:text-2xl font-semibold text-white mb-3">{{ content.title }}</h2>
-        <div class="prose prose-invert text-sm sm:text-base" style="opacity: 1 !important; overflow-x: auto;">{{ content.content | format_text | safe }}</div>
+        <div class="prose prose-invert text-sm sm:text-base mb-6 p-5 border rounded-lg card-hover soft-fade-in delay-200 visible" style="opacity: 1 !important; overflow-x: auto;">{{ content.content | format_text | safe }}</div>
     {% else %}
         <div class="ml-3 sm:ml-4 mt-2 sm:mt-3">
             <h3 class="text-base sm:text-xl font-medium text-white mb-2">{{ content.title }}</h3>
-            <div class="prose prose-invert text-sm sm:text-base" style="opacity: 1 !important; overflow-x: auto;">{{ content.content | format_text | safe }}</div>
+            <div class="prose prose-invert text-sm sm:text-base mb-6 p-5 bg-gray-800 border border-gray-700 rounded-lg card-hover fade-in delay-300 visible" style="opacity: 1 !important; overflow-x: auto;">{{ content.content | format_text | safe }}</div>
         </div>
     {% endif %}
 </div>

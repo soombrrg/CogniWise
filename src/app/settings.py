@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 from django.conf.global_settings import STATICFILES_DIRS
@@ -164,3 +165,14 @@ LOGOUT_REDIRECT_URL = "main:home"
 # SECURE_BROWSER_XSS_FILTER = True
 # SECURE_CONTENT_TYPE_NOSNIFF = True
 # X_FRAME_OPTIONS = "DENY"
+
+
+# Yookassa keys
+YOOKASSA_SHOP_ID = os.getenv("YOOKASSA_SHOP_ID")
+YOOKASSA_SECRET_KEY = os.getenv("YOOKASSA_SECRET_KEY")
+YOOKASSA_VAT_CODE = os.getenv("YOOKASSA_VAT_CODE")
+
+# Initializing Yookassa
+from yookassa import Configuration
+
+Configuration.configure(YOOKASSA_SHOP_ID, YOOKASSA_SECRET_KEY)

@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Оплата курса - CogniWise{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-slate-900 py-12 pt-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-white orbitron-font soft-neon-text mb-4">
+                <i class="fas fa-shopping-cart mr-2 text-emerald-300"></i>
+                Оформление заказа
+            </h1>
+            <p class="text-slate-400">Завершите покупку и начните обучение</p>
+        </div>
+
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-800 text-green-200{% else %}bg-red-800 text-red-200{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-slate-800/50 backdrop-blur-md rounded-2xl p-6 soft-neon-border">
+                <h2 class="text-xl font-bold text-white orbitron-font mb-6 flex items-center">
+                    <i class="fas fa-receipt mr-2 text-emerald-300"></i>
+                    Детали заказа
+                </h2>
+
+                <div class="bg-slate-700/50 rounded-xl p-4 mb-6 soft-neon-border">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-16 h-16 rounded-lg bg-slate-600 flex items-center justify-center soft-neon-glow">
+                            <i class="fas fa-code text-emerald-300 text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-white mb-1">{{ course.title }}</h3>
+                            <p class="text-slate-400 text-sm mb-2">{{ course.description|truncatechars:30 }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center pt-2 border-t border-slate-600/50">
+                    <span class="text-lg font-semibold text-white">Стоимость:</span>
+                    <span class="text-2xl font-bold text-emerald-300 soft-neon-text">{{ total_price }} ₽</span>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 backdrop-blur-md rounded-2xl p-6 soft-neon-border">
+                <h2 class="text-xl font-bold text-white orbitron-font mb-6 flex items-center">
+                    <i class="fas fa-credit-card mr-2 text-emerald-300"></i>
+                    Способ оплаты
+                </h2>
+
+                <div class="space-y-6">
+
+                    <label class="relative">
+                        <input type="radio" name="payment_method" value="yoomoney" class="sr-only peer">
+                        <div class="bg-slate-700/50 border-2 border-slate-600 rounded-lg p-4 text-center cursor-pointer transition-all duration-300 peer-checked:border-emerald-400 peer-checked:bg-emerald-400/20">
+                            <i class="fas fa-wallet text-2xl mb-2 text-slate-300 peer-checked:text-emerald-300"></i>
+                            <p class="text-sm text-slate-300 peer-checked:text-emerald-300">ЮKassa</p>
+                        </div>
+                    </label>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 px-6 rounded-lg transition duration-300 transform hover:scale-[1.02] soft-neon-glow text-lg">
+                            <i class="fas fa-lock mr-2"></i>
+                            Оплатить {{ total_price }} ₽
+                        </button>
+                    </form>
+                </div>
+                <div class="mt-6 p-4 bg-slate-700/30 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-emerald-400/20 flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-emerald-300"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-300">Безопасная оплата. Ваши данные защищены</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
