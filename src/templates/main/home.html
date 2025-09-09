@@ -2,6 +2,40 @@
 {% block title %}CogniWise - курсы программирования{% endblock %}
 
 {% block content %}
+    <style>
+        .videoModal {
+            position: fixed;
+            z-index: 102;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s ease;
+        }
+
+        .videoModal.toggle {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .videoModal iframe {
+            width: 740px;
+            height: 416px;
+            transform: scale(0,0);
+            border-radius: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .videoModal.toggle iframe {
+            transform: scale(1);
+            opacity: 1;
+        }
+    </style>
+    <div id="modal"></div>
     <!--Sidebar navigation-->
     <div class="fixed right-6 top-1/2 transform -translate-y-1/2 z-40 hidden lg:block">
         <div class="bg-slate-900/80 backdrop-blur-md rounded-2xl p-3 soft-neon-border">
@@ -57,10 +91,10 @@
                         Начать обучение
                         <i class="fas fa-arrow-right ml-2"></i>
                     </a>
-                    <a href="#" class="bg-transparent border border-emerald-300 text-emerald-300 hover:bg-emerald-300/10 font-bold py-3 px-6 rounded-lg transition duration-300 text-lg inline-flex items-center justify-center">
+                    <button hx-get="{% url 'main:modal-open' %}" hx-target="#modal" hx-swap="outerHTML" class="bg-transparent border border-emerald-300 text-emerald-300 hover:bg-emerald-300/10 font-bold py-3 px-6 rounded-lg transition duration-300 text-lg inline-flex items-center justify-center">
                         <i class="fas fa-play-circle mr-2"></i>
                         Демо
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>
@@ -101,7 +135,7 @@
                                 <p class="text-xs text-slate-400">Senior Python Developer</p>
                             </div>
                         </div>
-                        <a href="{% url 'main:course_detail' 1 %}">
+                        <a href="{% url 'main:course-detail' 1 %}">
                             <button class="mt-6 w-full soft-glow-button py-2 px-4 rounded-md">
                                 Подробнее о курсе
                             </button>
@@ -135,7 +169,7 @@
                                 <p class="text-xs text-slate-400">Full-stack Developer</p>
                             </div>
                         </div>
-                        <a href="{% url 'main:course_detail' 1 %}">
+                        <a href="{% url 'main:course-detail' 1 %}">
                             <button class="mt-6 w-full soft-glow-button py-2 px-4 rounded-md">
                                 Подробнее о курсе
                             </button>
@@ -451,7 +485,7 @@
             <h2 class="text-3xl font-extrabold text-white orbitron-font soft-neon-text">Готовы начать карьеру в IT?</h2>
             <p class="mt-4 text-lg text-teal-200">Присоединяйтесь к более чем 2000 студентов, которые уже обучаются у нас</p>
             <div class="mt-8 flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <a href="{% url 'main:courses_list' %}" class="soft-glow-button font-bold py-3 px-8 rounded-lg text-lg">
+                <a href="{% url 'main:courses-list' %}" class="soft-glow-button font-bold py-3 px-8 rounded-lg text-lg">
                     Выбрать курс
                 </a>
                 <a href="{% url 'main:about' %}" class="bg-transparent border border-teal-300 text-teal-300 hover:bg-teal-300/10 font-bold py-3 px-8 rounded-lg transition duration-300 text-lg">

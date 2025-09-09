@@ -24,7 +24,7 @@
                     <h3 class="font-semibold text-white mb-1">{{ course.title }}</h3>
                 </div>
             </div>
-            <a href="{% url 'main:course_detail' course.id %}" class="w-full soft-glow-button py-2 px-4 rounded-lg text-sm font-medium text-center block">
+            <a href="{% url 'main:course-detail' course.id %}" class="w-full soft-glow-button py-2 px-4 rounded-lg text-sm font-medium text-center block">
                 Продолжить обучение
             </a>
         </div>
@@ -37,7 +37,7 @@
         </div>
         <h3 class="text-lg font-semibold text-white mb-2">Курсов пока нет</h3>
         <p class="text-slate-400 mb-4">Приобретите свой первый курс и начните обучение</p>
-        <a href="{% url 'main:courses_list' %}" class="soft-glow-button px-6 py-2 rounded-lg inline-flex items-center">
+        <a href="{% url 'main:courses-list' %}" class="soft-glow-button px-6 py-2 rounded-lg inline-flex items-center">
             <i class="fas fa-shopping-cart mr-2"></i>
             Перейти к курсам
         </a>
@@ -136,7 +136,7 @@
             </div>
             <h3 class="text-lg font-semibold text-white mb-2">Заказов пока нет</h3>
             <p class="text-slate-400 mb-4">Начните обучение с первого курса</p>
-            <a href="{% url 'main:courses_list' %}" class="soft-glow-button px-6 py-2 rounded-lg inline-flex items-center">
+            <a href="{% url 'main:courses-list' %}" class="soft-glow-button px-6 py-2 rounded-lg inline-flex items-center">
                 <i class="fas fa-book-open mr-2"></i>
                 Перейти к курсам
             </a>

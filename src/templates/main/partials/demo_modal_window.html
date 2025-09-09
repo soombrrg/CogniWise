@@ -1,0 +1,12 @@
+<div id="modal" class="videoModal toggle" >
+    <div class="relative">
+        <div class="absolute -top-12 right-0 z-10">
+            <button hx-get="{% url 'main:modal-close' %}" hx-target="#modal" hx-swap="outerHTML" hx-trigger="click" class="bg-transparent border border-rose-300 text-rose-300 hover:bg-rose-300/10 font-medium py-2 px-4 rounded-lg transition duration-300 text-lg inline-flex items-center justify-center soft-neon-border">
+                <i class="fas fa-times mr-2"></i>
+                Close
+            </button>
+        </div>
+        <iframe src="https://www.youtube.com/embed/u_sIfs7Yom4" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+    </div>
+</div>
+

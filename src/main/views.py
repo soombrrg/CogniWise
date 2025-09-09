@@ -52,7 +52,9 @@ def course_detail_view(request, course_id):
     )
 
 
-def load_next_content(request, course_id, current_block_id, current_subblock_id=None):
+def load_next_content_view(
+    request, course_id, current_block_id, current_subblock_id=None
+):
     course = get_object_or_404(Course, id=course_id)
     current_block = get_object_or_404(Block, id=current_block_id, course=course)
 
@@ -71,7 +73,7 @@ def load_next_content(request, course_id, current_block_id, current_subblock_id=
         if next_subblock:
             return render(
                 request,
-                "main/partial_content.html",
+                "main/partials/partial_content.html",
                 {
                     "content": next_subblock,
                     "content_type": "subblock",
@@ -90,7 +92,7 @@ def load_next_content(request, course_id, current_block_id, current_subblock_id=
         if next_block:
             return render(
                 request,
-                "main/partial_content.html",
+                "main/partials/partial_content.html",
                 {
                     "content": next_block,
                     "content_type": "block",
@@ -106,7 +108,7 @@ def load_next_content(request, course_id, current_block_id, current_subblock_id=
         if next_subblock:
             return render(
                 request,
-                "main/partial_content.html",
+                "main/partials/partial_content.html",
                 {
                     "content": next_subblock,
                     "content_type": "subblock",
@@ -125,7 +127,7 @@ def load_next_content(request, course_id, current_block_id, current_subblock_id=
         if next_block:
             return render(
                 request,
-                "main/partial_content.html",
+                "main/partials/partial_content.html",
                 {
                     "content": next_block,
                     "content_type": "block",
@@ -137,7 +139,7 @@ def load_next_content(request, course_id, current_block_id, current_subblock_id=
     return HttpResponse("")
 
 
-def load_content(request, course_id, block_id, subblock_id=None):
+def load_content_view(request, course_id, block_id, subblock_id=None):
     course = get_object_or_404(Course, id=course_id)
     blocks = course.blocks.order_by("order")
 
@@ -171,9 +173,17 @@ def load_content(request, course_id, block_id, subblock_id=None):
 
     return render(
         request,
-        "main/partial_content_list.html",
+        "main/partials/partial_content_list.html",
         {
             "contents": contents,
             "target_id": f"{'subblock' if subblock_id else 'block'}-{subblock_id if subblock_id else block_id}",
         },
     )
+
+
+def modal_open_view(request):
+    return render(request, "main/partials/demo_modal_window.html")
+
+
+def modal_close_view(request):
+    return HttpResponse('<div id="modal"></div>')

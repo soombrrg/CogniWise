@@ -30,7 +30,7 @@ def checkout(request, course_id):
         status="completed",
     ).exists():
         messages.info(request, "Вы уже приобрели этот курс!")
-        return redirect("main:course_detail", course_id=course.id)
+        return redirect("main:course-detail", course_id=course.id)
 
     course_price = course.price
     if request.method != "POST":
