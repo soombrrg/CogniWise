@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+
+{% block title %}Регистрация - CogniWise{% endblock %}
+
 {% block content %}
 <style>
     .register-pattern {
@@ -9,7 +12,6 @@
 
 <div class="min-h-screen bg-slate-900 pt-20 register-pattern">
     <div class="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Логотип и заголовок -->
         <div class="text-center mb-8">
             <div class="mx-auto w-16 h-16 rounded-md bg-slate-800 flex items-center justify-center soft-neon-border soft-pulse mb-4">
                 <i class="fas fa-code text-emerald-300 text-2xl soft-neon-glow"></i>
@@ -20,7 +22,6 @@
             <p class="text-slate-400">Создайте аккаунт и начните обучение</p>
         </div>
 
-        <!-- Форма регистрации -->
         <div class="bg-slate-800/50 backdrop-blur-md rounded-2xl p-8 soft-neon-border">
             <form method="post" class="space-y-3">
                 {% csrf_token %}
@@ -31,10 +32,9 @@
                 </div>
                 {% endif %}
 
-                <!-- Имя и Фамилия -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
+                        <label for="{{ form.first_name.id_for_label }}" class="block text-base font-medium text-slate-300 mb-2">
                             {{ form.first_name.label }}
                         </label>
                         {{ form.first_name }}
@@ -43,7 +43,7 @@
                         {% endif %}
                     </div>
                     <div>
-                        <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
+                        <label for="{{ form.last_name.id_for_label }}" class="block text-base font-medium text-slate-300 mb-2">
                             {{ form.last_name.label }}
                         </label>
                         {{ form.last_name }}
@@ -53,47 +53,28 @@
                     </div>
                 </div>
 
-                <!-- Email -->
-                <div>
-                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
-                        {{ form.email.label }}
-                    </label>
-                    {{ form.email }}
-                    {% if form.email.errors %}
-                    <p class="mt-1 text-rose-400 text-sm">{{ form.email.errors.0 }}</p>
-                    {% endif %}
-                </div>
 
-                <!-- Пароль -->
-                <div>
-                    <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
-                        {{ form.password1.label }}
-                    </label>
-                    {{ form.password1 }}
-                    {% if form.password1.errors %}
-                    <p class="mt-1 text-rose-400 text-sm">{{ form.password1.errors.0 }}</p>
-                    {% endif %}
-                </div>
+                {% for f in form %}
+                    <div>
+                        {% if f.name in "email,password1,password2" %}
+                            <label for="{{ f.id_for_label }}" class="block text-base font-medium text-slate-300 mb-2">
+                                {{ f.label }}
+                            </label>
+                            {{ f }}
+                            {% if f.errors %}
+                                <p class="form-error">{{ f.errors.0 }}</p>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
 
-                <!-- Подтверждение пароля -->
-                <div>
-                    <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
-                        {{ form.password2.label }}
-                    </label>
-                    {{ form.password2 }}
-                    {% if form.password2.errors %}
-                    <p class="mt-1 text-rose-400 text-sm">{{ form.password2.errors.0 }}</p>
-                    {% endif %}
-                </div>
 
-                <!-- Кнопка регистрации -->
                 <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-lg transition duration-300 transform hover:scale-[1.02] soft-neon-glow">
                     <i class="fas fa-user-plus mr-2"></i>
                     Создать аккаунт
                 </button>
             </form>
 
-            <!-- Разделитель -->
             <div class="relative my-6">
                 <div class="absolute inset-0 flex items-center">
                     <div class="w-full border-t border-slate-600"></div>
@@ -103,7 +84,6 @@
                 </div>
             </div>
 
-            <!-- Ссылка на вход -->
             <div class="text-center">
                 <a href="{% url 'users:login' %}" class="inline-flex items-center text-emerald-300 hover:text-emerald-200 transition duration-300">
                     <i class="fas fa-sign-in-alt mr-2"></i>
@@ -112,7 +92,6 @@
             </div>
         </div>
 
-        <!-- Дополнительная информация -->
         <div class="mt-8 text-center">
             <p class="text-slate-400 text-sm">
                 Регистрируясь, вы соглашаетесь с нашими

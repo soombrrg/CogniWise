@@ -4,7 +4,11 @@ from django.contrib.auth.forms import (
     AuthenticationForm,
     PasswordChangeForm,
     UserCreationForm,
+    PasswordResetForm,
+    SetPasswordForm,
 )
+from django.utils.translation import gettext_lazy as _
+
 
 User = get_user_model()
 
@@ -94,7 +98,7 @@ class CustomUserCreationForm(UserCreationForm):
 
 class CustomUserLoginForm(AuthenticationForm):
     username = forms.CharField(
-        label="Email",
+        label="Электронная почта",
         widget=forms.TextInput(
             attrs={
                 "autofocus": True,
@@ -186,29 +190,94 @@ class CustomUserUpdateForm(forms.ModelForm):
 
 class CustomUserPasswordChangeForm(PasswordChangeForm):
     old_password = forms.CharField(
-        label="Current password",
+        label="Текущий пароль",
         widget=forms.PasswordInput(
             attrs={
-                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition duration-300 soft-neon-border",
+                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
+                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
+                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
                 "placeholder": "Текущий пароль",
             }
         ),
     )
     new_password1 = forms.CharField(
-        label="New password",
+        label="Новый пароль",
         widget=forms.PasswordInput(
             attrs={
-                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition duration-300 soft-neon-border",
+                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
+                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
+                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
                 "placeholder": "Новый пароль",
             }
         ),
     )
     new_password2 = forms.CharField(
-        label="New password (repeat)",
+        label="Подтверждение нового пароля",
         widget=forms.PasswordInput(
             attrs={
-                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition duration-300 soft-neon-border",
+                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
+                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
+                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
+                "placeholder": "Подтвердите новый пароль",
+            }
+        ),
+    )
+
+    class Meta:
+        model = User
+        fields = ("old_password", "new_password1", "new_password2")
+
+
+class CustomUserPasswordResetForm(PasswordResetForm):
+    email = forms.EmailField(
+        label=_("Email"),
+        max_length=254,
+        widget=forms.EmailInput(
+            attrs={
+                "autocomplete": "email",
+                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
+                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
+                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
+                "placeholder": "Ваш email",
+            }
+        ),
+    )
+
+    class Meta:
+        model = User
+        fields = ("email",)
+
+
+class CustomSetPasswordForm(SetPasswordForm):
+    new_password1 = forms.CharField(
+        label=_("New password"),
+        required=True,
+        strip=False,
+        widget=forms.PasswordInput(
+            attrs={
+                "autocomplete": "new-password",
+                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
+                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
+                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
+                "placeholder": "Новый пароль",
+            }
+        ),
+    )
+    new_password2 = forms.CharField(
+        label=_("New password confirmation"),
+        required=True,
+        strip=False,
+        widget=forms.PasswordInput(
+            attrs={
+                "autocomplete": "new-password",
+                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
+                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
+                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
                 "placeholder": "Повторите новый пароль",
             }
         ),
     )
+
+    class Meta:
+        model = User
+        fields = ("email",)

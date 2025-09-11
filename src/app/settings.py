@@ -166,6 +166,10 @@ LOGOUT_REDIRECT_URL = "main:home"
 # X_FRAME_OPTIONS = "DENY"
 
 
+# Testing Mailing
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+
 # Yookassa keys
 YOOKASSA_SHOP_ID = os.getenv("YOOKASSA_SHOP_ID")
 YOOKASSA_SECRET_KEY = os.getenv("YOOKASSA_SECRET_KEY")

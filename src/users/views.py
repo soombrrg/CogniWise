@@ -1,8 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.views import (
+    PasswordResetView,
+    PasswordResetDoneView,
+    PasswordResetCompleteView,
+    PasswordResetConfirmView,
+)
 from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
 
 from orders.models import Order
 from users.forms import (
@@ -10,6 +16,8 @@ from users.forms import (
     CustomUserLoginForm,
     CustomUserPasswordChangeForm,
     CustomUserUpdateForm,
+    CustomUserPasswordResetForm,
+    CustomSetPasswordForm,
 )
 from users.models import CustomUser
 
@@ -18,7 +26,7 @@ def register_view(request):
     if request.user.is_authenticated:
         return redirect("users:profile")
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user, backend="django.contrib.auth.backends.ModelBackend")
@@ -68,8 +76,22 @@ def profile_view(request):
     )
 
 
+class CustomPasswordResetView(PasswordResetView):
+    form_class = CustomUserPasswordResetForm
+    template_name = "users/password/password_reset_form.html"
+    email_template_name = "users/password/password_reset_email.html"
+    subject_template_name = "users/password/password_reset_subject.txt"
+    success_url = reverse_lazy("users:password_reset_done")
+
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    form_class = CustomSetPasswordForm
+    success_url = reverse_lazy("users:password_reset_complete")
+    template_name = "users/password/password_reset_confirm.html"
+
+
 @login_required
-def change_password(request):
+def password_change_view(request):
     if request.method == "POST":
         form = CustomUserPasswordChangeForm(user=request.user, data=request.POST)
         if form.is_valid():
@@ -78,7 +100,7 @@ def change_password(request):
             messages.success(request, "Пароль успешно обновлен!", extra_tags="success")
             return render(
                 request,
-                "users/partials/change_password.html",
+                "users/partial/password_change.html",
                 {"user": user, "form": form},
             )
         else:
@@ -89,7 +111,7 @@ def change_password(request):
         form = CustomUserPasswordChangeForm(user=request.user)
     return render(
         request,
-        "users/partials/change_password.html",
+        "users/partial/password_change.html",
         {"user": request.user, "form": form},
     )
 
