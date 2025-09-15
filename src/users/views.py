@@ -1,14 +1,19 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import (
     PasswordResetView,
-    PasswordResetDoneView,
-    PasswordResetCompleteView,
     PasswordResetConfirmView,
 )
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail
 from django.shortcuts import redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
 from orders.models import Order
 from users.forms import (
@@ -28,15 +33,64 @@ def register_view(request):
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user, backend="django.contrib.auth.backends.ModelBackend")
-            messages.success(request, "Регистрация прошла успешно!")
-            return redirect("users:profile")
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+            send_verification_email(request, user)
+            return render(
+                request,
+                "users/registration/verification_sent.html",
+                {"email": user.email},
+            )
         else:
             messages.error(request, "Пожалуйста исправьте ошибки в форме.")
     else:
         form = CustomUserCreationForm()
     return render(request, "users/register.html", {"form": form})
+
+
+def send_verification_email(request, user):
+    subject = "Подтверждение регистрации"
+    current_site = get_current_site(request)
+    user_email = user.email
+
+    context = {
+        "user": user,
+        "email": user_email,
+        "domain": current_site.domain,
+        "site_name": current_site.name,
+        "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+        "token": default_token_generator.make_token(user),
+        "protocol": "https" if request.is_secure() else "http",
+    }
+
+    message = render_to_string("users/registration/verification_email.html", context)
+
+    send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [user_email],
+        html_message=message,
+    )
+
+
+def email_verification_view(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = CustomUser.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.email_verified = True
+        user.save()
+        login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+        messages.success(request, "Регистрация прошла успешно!")
+        return redirect("users:profile")
+    else:
+        return render(request, "users/registration/verification_failed.html")
 
 
 def login_view(request):
@@ -100,7 +154,7 @@ def password_change_view(request):
             messages.success(request, "Пароль успешно обновлен!", extra_tags="success")
             return render(
                 request,
-                "users/partial/password_change.html",
+                "users/partials/password_change.html",
                 {"user": user, "form": form},
             )
         else:
@@ -111,7 +165,7 @@ def password_change_view(request):
         form = CustomUserPasswordChangeForm(user=request.user)
     return render(
         request,
-        "users/partial/password_change.html",
+        "users/partials/password_change.html",
         {"user": request.user, "form": form},
     )
 

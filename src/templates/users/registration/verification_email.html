@@ -1,0 +1,9 @@
+{% load i18n %}{% autoescape off %}
+<p>Подтвердите свой email.</p>
+<p>Привет, для завершения регистрации на нашем сайте, пожалуйста перейдите по
+    <a href="{{ protocol }}://{{ domain }}{% url 'users:email_verification' uidb64=uid token=token %}">ссылке</a>.
+</p>
+<p>Если вы не регистрировались на нашем сайте, проигнорируйте это письмо.</p>
+<p>С уважением, {{ site_name }}.</p>
+{% endautoescape %}
+

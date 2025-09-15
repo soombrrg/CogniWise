@@ -6,13 +6,20 @@ from users.models import CustomUser
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-    list_display = ("email", "first_name", "last_name", "is_staff")
-    list_filter = ("is_staff", "is_superuser")
+    list_display = ("email", "email_verified", "first_name", "last_name", "is_staff")
+    list_filter = (
+        "is_staff",
+        "is_superuser",
+        "email_verified",
+    )
     search_fields = ("email", "first_name", "last_name")
     ordering = ("email",)
     fieldsets = (
-        (None, {"fields": ("email", "password")}),
-        ("Personal info", {"fields": ("first_name", "last_name")}),
+        (None, {"fields": ("email", "email_verified", "password")}),
+        (
+            "Personal info",
+            {"fields": ("first_name", "last_name", "phone", "birthday", "bio")},
+        ),
         (
             "Permissions",
             {

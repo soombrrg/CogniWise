@@ -15,15 +15,20 @@ from users.views import (
     update_account_details_view,
     CustomPasswordResetView,
     CustomPasswordResetConfirmView,
+    email_verification_view,
 )
 
 app_name = "users"
 
 urlpatterns = [
-    path("register/", register_view, name="register"),
     path("login/", login_view, name="login"),
     path("logout/", logout_view, name="logout"),
+]
+
+# Profile
+urlpatterns += [
     path("profile/", profile_view, name="profile"),
+    path("password-change/", password_change_view, name="password_change"),
     path("account-details/", account_details_view, name="account-details"),
     path(
         "edit-account-details/",
@@ -37,10 +42,16 @@ urlpatterns = [
     ),
 ]
 
-
-# Password Managing
+# Registration
 urlpatterns += [
-    path("password-change/", password_change_view, name="password_change"),
+    path("register/", register_view, name="register"),
+    path(
+        "register/<uidb64>/<token>/", email_verification_view, name="email_verification"
+    ),
+]
+
+# Password Resetting
+urlpatterns += [
     path(
         "password-reset/",
         CustomPasswordResetView.as_view(),
@@ -54,12 +65,12 @@ urlpatterns += [
         name="password_reset_done",
     ),
     path(
-        "reset/<uidb64>/<token>/",
+        "password-reset/<uidb64>/<token>/",
         CustomPasswordResetConfirmView.as_view(),
         name="password_reset_confirm",
     ),
     path(
-        "reset/done/",
+        "password-reset/complete/",
         PasswordResetCompleteView.as_view(
             template_name="users/password/password_reset_complete.html",
         ),

@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 
+from users.validators import phone_validator, birthday_validator
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, password=None, **extra_fields):
@@ -29,10 +31,34 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractUser):
-    email = models.EmailField(unique=True, max_length=66)
-    first_name = models.CharField(max_length=66)
-    last_name = models.CharField(max_length=66)
-    username = models.CharField(max_length=150, unique=True, null=True, blank=True)
+    email = models.EmailField(unique=True, max_length=30, verbose_name="Email")
+    email_verified = models.BooleanField(
+        default=False, verbose_name="Email подтвержден"
+    )
+    first_name = models.CharField(max_length=25, verbose_name="Имя")
+    last_name = models.CharField(max_length=25, verbose_name="Фамилия")
+    username = models.CharField(max_length=25, unique=True, null=True, blank=True)
+
+    # Additional Fields
+    phone = models.CharField(
+        max_length=20,
+        null=True,
+        blank=True,
+        validators=[phone_validator],
+        verbose_name="Телефон",
+    )
+    birthday = models.DateField(
+        null=True,
+        blank=True,
+        validators=[birthday_validator],
+        verbose_name="День Рождения",
+    )
+    bio = models.TextField(
+        max_length=250,
+        null=True,
+        blank=True,
+        verbose_name="О себе",
+    )
 
     objects = CustomUserManager()
 

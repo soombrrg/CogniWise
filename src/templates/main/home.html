@@ -3,6 +3,10 @@
 
 {% block content %}
     <style>
+        .hero-pattern {
+            background-color: var(--primary-dark);
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2310b981' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
         .videoModal {
             position: fixed;
             z-index: 102;
@@ -16,12 +20,10 @@
             visibility: hidden;
             transition: 0.3s ease;
         }
-
         .videoModal.toggle {
             opacity: 1;
             visibility: visible;
         }
-
         .videoModal iframe {
             width: 740px;
             height: 416px;
@@ -29,7 +31,6 @@
             border-radius: 5px;
             transition: transform 0.3s ease;
         }
-
         .videoModal.toggle iframe {
             transform: scale(1);
             opacity: 1;
@@ -617,4 +618,34 @@
             </div>
         </div>
     </section>
+
+<script type="application/javascript">
+    gsap.registerPlugin(ScrollTrigger);
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // Hero header animation
+        gsap.from('.hero-pattern', {
+            opacity: 0,
+            duration: 1,
+            ease: "power2.out"
+        });
+
+        // Pricing card animation
+        gsap.utils.toArray('.pricing-card').forEach(card => {
+            gsap.fromTo(card, {
+                scale: 0.9,
+                opacity: 0
+            }, {
+                scale: 1,
+                opacity: 1,
+                duration: 0.6,
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                }
+            });
+        });
+    })
+</script>
 {% endblock %}

@@ -20,15 +20,13 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
                 <div class="lg-col-span-1">
                     <div id="sidebar-profile" >
                         {% include 'users/partials/sidebar_profile.html' %}
                     </div>
                     {% include 'users/partials/sidebar_profile_settings.html' %}
                 </div>
-
-                <div id="content-profile" class="lg:col-span-2">
+                <div id="content-profile" class="lg:col-span-2 pb-20">
                     {% include 'users/partials/account_details.html' %}
                 </div>
             </div>

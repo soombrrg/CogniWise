@@ -1,3 +1,6 @@
+import datetime
+import re
+
 from django import forms
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.forms import (
@@ -7,48 +10,47 @@ from django.contrib.auth.forms import (
     PasswordResetForm,
     SetPasswordForm,
 )
-from django.utils.translation import gettext_lazy as _
 
 
 User = get_user_model()
+
+base_form_class = (
+    "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
+    "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
+    "focus:ring-emerald-400 transition duration-300 soft-neon-border"
+)
 
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(
         required=True,
-        max_length=66,
-        label="Электронная почта",
+        max_length=30,
+        label="Email",
         widget=forms.EmailInput(
             attrs={
-                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
-                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
-                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
-                "placeholder": "Ваш email",
+                "class": base_form_class,
+                "placeholder": "your@email.com",
             }
         ),
     )
     first_name = forms.CharField(
         required=True,
-        max_length=66,
+        max_length=25,
         label="Имя",
         widget=forms.TextInput(
             attrs={
-                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
-                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
-                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
+                "class": base_form_class,
                 "placeholder": "Ваше имя",
             }
         ),
     )
     last_name = forms.CharField(
         required=True,
-        max_length=66,
+        max_length=25,
         label="Фамилия",
         widget=forms.TextInput(
             attrs={
-                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
-                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
-                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
+                "class": base_form_class,
                 "placeholder": "Ваша фамилия",
             }
         ),
@@ -58,9 +60,7 @@ class CustomUserCreationForm(UserCreationForm):
         label="Пароль",
         widget=forms.PasswordInput(
             attrs={
-                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
-                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
-                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
+                "class": base_form_class,
                 "placeholder": "Ваш пароль",
             }
         ),
@@ -70,9 +70,7 @@ class CustomUserCreationForm(UserCreationForm):
         label="Подтверждение пароля",
         widget=forms.PasswordInput(
             attrs={
-                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
-                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
-                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
+                "class": base_form_class,
                 "placeholder": "Подтвердите пароль",
             }
         ),
@@ -98,14 +96,12 @@ class CustomUserCreationForm(UserCreationForm):
 
 class CustomUserLoginForm(AuthenticationForm):
     username = forms.CharField(
-        label="Электронная почта",
+        label="Email",
         widget=forms.TextInput(
             attrs={
                 "autofocus": True,
-                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
-                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
-                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
-                "placeholder": "Ваш email",
+                "class": base_form_class,
+                "placeholder": "your@email.com",
             }
         ),
     )
@@ -113,9 +109,7 @@ class CustomUserLoginForm(AuthenticationForm):
         label="Пароль",
         widget=forms.PasswordInput(
             attrs={
-                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
-                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
-                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
+                "class": base_form_class,
                 "placeholder": "Ваш пароль",
             }
         ),
@@ -137,46 +131,75 @@ class CustomUserLoginForm(AuthenticationForm):
 class CustomUserUpdateForm(forms.ModelForm):
     first_name = forms.CharField(
         required=True,
-        max_length=66,
+        max_length=25,
         label="Имя",
         widget=forms.TextInput(
             attrs={
-                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
-                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
-                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
+                "class": base_form_class,
                 "placeholder": "Ваше имя",
             }
         ),
     )
     last_name = forms.CharField(
         required=True,
-        max_length=66,
+        max_length=25,
         label="Фамилия",
         widget=forms.TextInput(
             attrs={
-                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
-                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
-                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
+                "class": base_form_class,
                 "placeholder": "Ваша фамилия",
             }
         ),
     )
     email = forms.EmailField(
         required=True,
-        label="Электронная почта",
+        label="Email",
         widget=forms.EmailInput(
             attrs={
-                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
-                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
-                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
-                "placeholder": "Ваш email",
+                "class": base_form_class,
+                "placeholder": "your@email.com",
+            }
+        ),
+    )
+    phone = forms.CharField(
+        required=False,
+        max_length=20,
+        label="Телефон",
+        widget=forms.TelInput(
+            attrs={
+                "class": base_form_class,
+                "placeholder": "+99999999999",
+            }
+        ),
+    )
+
+    birthday = forms.DateField(
+        required=False,
+        label="Дата рождения",
+        widget=forms.DateInput(
+            format="%Y-%m-%d",
+            attrs={
+                "type": "date",
+                "class": base_form_class,
+            },
+        ),
+    )
+
+    bio = forms.CharField(
+        required=False,
+        label="О себе",
+        widget=forms.Textarea(
+            attrs={
+                "rows": "3",
+                "class": base_form_class + " resize-none",
+                "placeholder": "Расскажите немного о себе...",
             }
         ),
     )
 
     class Meta:
         model = User
-        fields = ("first_name", "last_name", "email")
+        fields = ("first_name", "last_name", "email", "birthday", "phone", "bio")
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
@@ -187,15 +210,31 @@ class CustomUserUpdateForm(forms.ModelForm):
             raise forms.ValidationError("Этот email уже используется.")
         return email
 
+    def clean_birthdate(self):
+        birthdate = self.cleaned_data.get("birthdate")
+        if birthdate and birthdate > datetime.date.today():
+            raise forms.ValidationError("Дата рождения не может быть в будущем")
+        return birthdate
+
+    def clean_phone(self):
+        phone = self.cleaned_data.get("phone")
+        if phone and not re.match(r"^\+?1?\d{8,15}$", phone.replace(" ", "")):
+            raise forms.ValidationError("Номер формата: +99999999999")
+        return phone
+
+    def clean_bio(self):
+        bio = self.cleaned_data.get("bio")
+        if bio and len(bio) > 250:
+            raise forms.ValidationError("Максимум 250 символов")
+        return bio
+
 
 class CustomUserPasswordChangeForm(PasswordChangeForm):
     old_password = forms.CharField(
         label="Текущий пароль",
         widget=forms.PasswordInput(
             attrs={
-                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
-                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
-                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
+                "class": base_form_class,
                 "placeholder": "Текущий пароль",
             }
         ),
@@ -204,9 +243,7 @@ class CustomUserPasswordChangeForm(PasswordChangeForm):
         label="Новый пароль",
         widget=forms.PasswordInput(
             attrs={
-                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
-                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
-                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
+                "class": base_form_class,
                 "placeholder": "Новый пароль",
             }
         ),
@@ -215,9 +252,7 @@ class CustomUserPasswordChangeForm(PasswordChangeForm):
         label="Подтверждение нового пароля",
         widget=forms.PasswordInput(
             attrs={
-                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
-                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
-                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
+                "class": base_form_class,
                 "placeholder": "Подтвердите новый пароль",
             }
         ),
@@ -230,54 +265,40 @@ class CustomUserPasswordChangeForm(PasswordChangeForm):
 
 class CustomUserPasswordResetForm(PasswordResetForm):
     email = forms.EmailField(
-        label=_("Email"),
-        max_length=254,
+        label="Email",
+        max_length=30,
         widget=forms.EmailInput(
             attrs={
                 "autocomplete": "email",
-                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
-                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
-                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
-                "placeholder": "Ваш email",
+                "class": base_form_class,
+                "placeholder": "your@email.com",
             }
         ),
     )
 
-    class Meta:
-        model = User
-        fields = ("email",)
-
 
 class CustomSetPasswordForm(SetPasswordForm):
     new_password1 = forms.CharField(
-        label=_("New password"),
+        label="Новый пароль",
         required=True,
         strip=False,
         widget=forms.PasswordInput(
             attrs={
                 "autocomplete": "new-password",
-                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
-                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
-                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
+                "class": base_form_class,
                 "placeholder": "Новый пароль",
             }
         ),
     )
     new_password2 = forms.CharField(
-        label=_("New password confirmation"),
+        label="Повторите новый пароль",
         required=True,
         strip=False,
         widget=forms.PasswordInput(
             attrs={
                 "autocomplete": "new-password",
-                "class": "w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 "
-                "placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 "
-                "focus:ring-emerald-400 transition duration-300 soft-neon-border",
+                "class": base_form_class,
                 "placeholder": "Повторите новый пароль",
             }
         ),
     )
-
-    class Meta:
-        model = User
-        fields = ("email",)
