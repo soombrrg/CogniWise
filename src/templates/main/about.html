@@ -1,5 +1,187 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block title %}О нас - CogniWise{% endblock %}
+
 {% block content %}
-<!--TODO	about-->
+<div class="min-h-screen bg-slate-900 pt-20">
+    <section class="relative py-20 overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-full flex justify-center items-center">
+            <div class="w-96 h-96 rounded-full bg-emerald-300 opacity-10 blur-3xl soft-float"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center">
+                <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight orbitron-font soft-neon-text mb-6">
+                    О Cogni<span class="text-gradient">Wise</span>
+                </h1>
+                <p class="text-xl text-slate-300 max-w-3xl mx-auto">
+                    Превращаем новичков в востребованных разработчиков через качественное образование и комьюнити поддержку
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 bg-slate-900/50 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold text-white orbitron-font soft-neon-text mb-6">
+                        <i class="fas fa-bullseye mr-3 text-emerald-300"></i>
+                        Наша миссия
+                    </h2>
+                    <p class="text-slate-300 text-lg mb-6">
+                        Мы верим, что каждый человек заслуживает возможность освоить программирование
+                        и построить успешную карьеру в IT, независимо от своего прошлого опыта.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-emerald-400/20 flex items-center justify-center mr-4">
+                                <i class="fas fa-check text-emerald-300"></i>
+                            </div>
+                            <span class="text-slate-200">Доступное образование</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-emerald-400/20 flex items-center justify-center mr-4">
+                                <i class="fas fa-check text-emerald-300"></i>
+                            </div>
+                            <span class="text-slate-200">Практический подход</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-emerald-400/20 flex items-center justify-center mr-4">
+                                <i class="fas fa-check text-emerald-300"></i>
+                            </div>
+                            <span class="text-slate-200">Поддержка сообщества</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="bg-slate-800/50 rounded-2xl p-8 soft-neon-border">
+                        <div class="text-6xl text-emerald-300 text-center mb-4">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                            <div>
+                                <div class="text-3xl font-bold text-white orbitron-font">2000+</div>
+                                <div class="text-slate-400 text-sm">Студентов</div>
+                            </div>
+                            <div>
+                                <div class="text-3xl font-bold text-white orbitron-font">50+</div>
+                                <div class="text-slate-400 text-sm">Курсов</div>
+                            </div>
+                            <div>
+                                <div class="text-3xl font-bold text-white orbitron-font">89%</div>
+                                <div class="text-slate-400 text-sm">Трудоустройство</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 gradient-bg relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 rounded-full bg-teal-300 opacity-10 blur-3xl soft-float"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-extrabold text-white orbitron-font soft-neon-text mb-4">
+                    Почему выбирают нас
+                </h2>
+                <p class="text-lg text-slate-300">Мы создаем образовательную среду будущего</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center transform transition duration-500 hover:scale-[1.02]">
+                    <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-md bg-slate-800 text-emerald-300 soft-neon-border soft-neon-glow mb-4">
+                        <i class="fas fa-graduation-cap text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-white orbitron-font mb-2">Экспертные знания</h3>
+                    <p class="text-slate-300">Преподаватели с опытом работы в ведущих IT-компаниях</p>
+                </div>
+
+                <div class="text-center transform transition duration-500 hover:scale-[1.02]">
+                    <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-md bg-slate-800 text-emerald-300 soft-neon-border soft-neon-glow mb-4">
+                        <i class="fas fa-briefcase text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-white orbitron-font mb-2">Карьерный рост</h3>
+                    <p class="text-slate-300">Помощь в трудоустройстве и развитии карьеры</p>
+                </div>
+
+                <div class="text-center transform transition duration-500 hover:scale-[1.02]">
+                    <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-md bg-slate-800 text-emerald-300 soft-neon-border soft-neon-glow mb-4">
+                        <i class="fas fa-infinity text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-white orbitron-font mb-2">Пожизненный доступ</h3>
+                    <p class="text-slate-300">Курсы остаются с вами навсегда</p>
+                </div>
+
+                <div class="text-center transform transition duration-500 hover:scale-[1.02]">
+                    <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-md bg-slate-800 text-emerald-300 soft-neon-border soft-neon-glow mb-4">
+                        <i class="fas fa-comments text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-white orbitron-font mb-2">Сообщество</h3>
+                    <p class="text-slate-300">Поддержка и общение с единомышленниками</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 bg-slate-900/50 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-extrabold text-white orbitron-font soft-neon-text mb-4">
+                    Наша команда
+                </h2>
+                <p class="text-lg text-slate-300">Профессионалы, которые помогут вам достичь успеха</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for member in team_members %}
+                <div class="bg-slate-800/50 rounded-2xl p-6 text-center soft-neon-border transform transition duration-500 hover:scale-[1.02]">
+                    <div class="w-24 h-24 mx-auto rounded-full bg-slate-700 mb-4 flex items-center justify-center soft-neon-border">
+                        <img class="h-24 w-24 rounded-full" src="{{ member.img }}" alt="{{ member.img }}">
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">{{ member.name }}</h3>
+                    <p class="text-emerald-300 mb-3">{{ member.position }}</p>
+                    <p class="text-slate-400 text-sm mb-4">{{ member.bio }}</p>
+                    <div class="flex justify-center space-x-3">
+                        <a href="#" class="text-slate-400 hover:text-emerald-300 transition duration-300">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-emerald-300 transition duration-300">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-emerald-300 transition duration-300">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-slate-900/70 relative overflow-hidden">
+        <div class="absolute inset-0 flex justify-center items-center">
+            <div class="w-96 h-96 rounded-full bg-teal-300 opacity-10 blur-3xl soft-float"></div>
+        </div>
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <h2 class="text-3xl font-extrabold text-white orbitron-font soft-neon-text mb-6">
+                Готовы начать свой путь в IT?
+            </h2>
+            <p class="text-xl text-slate-300 mb-8">
+                Присоединяйтесь к сообществу разработчиков и начните создавать свое будущее уже сегодня
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="{% url 'main:courses-list' %}" class="soft-glow-button font-bold py-3 px-8 rounded-lg text-lg">
+                    <i class="fas fa-book-open mr-2"></i>
+                    Смотреть курсы
+                </a>
+                <a href="{% url 'users:register' %}" class="bg-transparent border border-emerald-300 text-emerald-300 hover:bg-emerald-300/10 font-bold py-3 px-8 rounded-lg transition duration-300 text-lg">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Начать обучение
+                </a>
+            </div>
+        </div>
+    </section>
+</div>
 {% endblock %}

@@ -1,7 +1,11 @@
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django.template.loader import render_to_string
 
+from main.forms import EmailForContactForm
 from main.models import Block, Course, SubBlock
 from orders.models import Order
 
@@ -12,15 +16,28 @@ def home_view(request):
 
 
 def about_view(request):
-    return render(request, "main/about.html", {})
-
-
-def reviews_view(request):
-    return render(request, "main/reviews.html", {})
-
-
-def pricing_view(request):
-    return render(request, "main/pricing.html", {})
+    # Just for example
+    team_members = [
+        {
+            "name": "Алексей Петров",
+            "position": "Senior Python Developer",
+            "bio": "10+ лет опыта",
+            "img": "https://images.pexels.com/photos/39866/entrepreneur-startup-start-up-man-39866.jpeg",
+        },
+        {
+            "name": "Мария Иванова",
+            "position": "Full-stack Developer",
+            "bio": "Специалист по React и Node.js",
+            "img": "https://images.pexels.com/photos/8517921/pexels-photo-8517921.jpeg",
+        },
+        {
+            "name": "Дмитрий Смирнов",
+            "position": "Data Scientist",
+            "bio": "Эксперт в машинном обучении",
+            "img": "https://images.pexels.com/photos/845457/pexels-photo-845457.jpeg",
+        },
+    ]
+    return render(request, "main/about.html", {"team_members": team_members})
 
 
 def course_list_view(request):
@@ -181,9 +198,42 @@ def load_content_view(request, course_id, block_id, subblock_id=None):
     )
 
 
-def modal_open_view(request):
-    return render(request, "main/partials/demo_modal_window.html")
+def modal_open_demo_view(request):
+    return render(request, "main/partials/modal_demo.html")
+
+
+def modal_open_contact_view(request):
+    if request.method == "POST":
+        form = EmailForContactForm(request.POST)
+        if form.is_valid():
+
+            send_email_for_contact(form)
+            return render(request, "main/partials/modal_successful_sending.html")
+    else:
+        form = EmailForContactForm()
+    return render(request, "main/partials/modal_contact.html", {"form": form})
 
 
 def modal_close_view(request):
     return HttpResponse('<div id="modal"></div>')
+
+
+def send_email_for_contact(form):
+    subject = "Пользователь хочет связаться"
+
+    context = {
+        "name": form.cleaned_data["name"],
+        "email": form.cleaned_data["email"],
+        "phone": form.cleaned_data["phone"],
+        "tg_username": form.cleaned_data["tg_username"],
+    }
+
+    message = render_to_string("main/email_for_contact.html", context)
+
+    send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [settings.DEFAULT_FROM_EMAIL],
+        html_message=message,
+    )

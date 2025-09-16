@@ -15,7 +15,6 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 
@@ -137,25 +136,28 @@ LOGOUT_REDIRECT_URL = "main:home"
 # SECURE_CONTENT_TYPE_NOSNIFF = True
 # X_FRAME_OPTIONS = "DENY"
 
+MAILING_MODE = env("MAILING_MODE")
 
 # Testing Mailing
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+if MAILING_MODE == "test":
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # SMTP Mailing
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+if MAILING_MODE == "prod":
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-EMAIL_HOST = env("EMAIL_HOST")
-EMAIL_PORT = env("EMAIL_PORT")
-EMAIL_HOST_USER = env("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
-if EMAIL_PORT == "587":
-    EMAIL_USE_TLS = True
-if EMAIL_PORT == "465":
-    EMAIL_USE_SSL = True
+    EMAIL_HOST = env("EMAIL_HOST")
+    EMAIL_PORT = env("EMAIL_PORT")
+    EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+    EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+    if EMAIL_PORT == "587":
+        EMAIL_USE_TLS = True
+    if EMAIL_PORT == "465":
+        EMAIL_USE_SSL = True
 
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-SERVER_EMAIL = EMAIL_HOST_USER
-EMAIL_ADMIN = EMAIL_HOST_USER
+    DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+    SERVER_EMAIL = EMAIL_HOST_USER
+    EMAIL_ADMIN = EMAIL_HOST_USER
 
 # Yookassa keys
 YOOKASSA_SHOP_ID = env("YOOKASSA_SHOP_ID")

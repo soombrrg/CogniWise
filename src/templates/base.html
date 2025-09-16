@@ -211,8 +211,8 @@
                         </a>
                         <div class="hidden md:ml-6 md:flex md:space-x-8">
                             <a href="{% url 'main:courses-list' %}" class="border-transparent text-slate-400 hover:border-emerald-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Курсы</a>
-                            <a href="/#pricing" class="border-transparent text-slate-400 hover:border-emerald-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Тарифы</a>
-                            <a href="/#feedbacks" class="border-transparent text-slate-400 hover:border-emerald-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Отзывы</a>
+                            <a href="/#pricing" class="border-transparent text-slate-400 hover:border-emerald-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Планы</a>
+                            <a href="{% url 'main:about' %}" class="border-transparent text-slate-400 hover:border-emerald-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">О нас</a>
                             <a href="/#faq" class="border-transparent text-slate-400 hover:border-emerald-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">FAQ</a>
                         </div>
                     </div>
@@ -266,8 +266,8 @@
             <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="md:hidden soft-neon-border mt-2">
                 <div class="pt-2 pb-3 space-y-1 bg-slate-900 bg-opacity-90">
                     <a href="{% url 'main:courses-list' %}" class="text-slate-400 hover:bg-slate-800 hover:text-white block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium">Курсы</a>
-                    <a href="/#pricing" class="text-slate-400 hover:bg-slate-800 hover:text-white block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium">Тарифы</a>
-                    <a href="/#feedbacks" class="text-slate-400 hover:bg-slate-800 hover:text-white block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium">Отзывы</a>
+                    <a href="/#pricing" class="text-slate-400 hover:bg-slate-800 hover:text-white block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium">Планы</a>
+                    <a href="{% url 'main:about' %}" class="text-slate-400 hover:bg-slate-800 hover:text-white block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium">О нас</a>
                     <a href="/#faq" class="text-slate-400 hover:bg-slate-800 hover:text-white block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium">FAQ</a>
 
                     <div class="border-t border-slate-600/50 my-1"></div>
@@ -327,7 +327,6 @@
                     <h4 class="text-white font-bold orbitron-font">Компания</h4>
                     <ul class="mt-4 space-y-2">
                         <li><a href="{% url 'main:about' %}" class="text-slate-400 hover:text-teal-300 transition duration-300">О нас</a></li>
-                        <li><a href="#" class="text-slate-400 hover:text-teal-300 transition duration-300">Преподаватели</a></li>
                     </ul>
                 </div>
 

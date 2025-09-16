@@ -7,10 +7,9 @@ from main.views import (
     home_view,
     load_content_view,
     load_next_content_view,
-    pricing_view,
-    reviews_view,
-    modal_open_view,
+    modal_open_demo_view,
     modal_close_view,
+    modal_open_contact_view,
 )
 
 app_name = "main"
@@ -18,9 +17,8 @@ app_name = "main"
 urlpatterns = [
     path("", home_view, name="home"),
     path("about/", about_view, name="about"),
-    path("reviews/", reviews_view, name="reviews"),
-    path("pricing/", pricing_view, name="pricing"),
-    path("modal-open/", modal_open_view, name="modal-open"),
+    path("modal-open-demo/", modal_open_demo_view, name="modal-open-demo"),
+    path("modal-open-contact/", modal_open_contact_view, name="modal-open-contact"),
     path("modal-close/", modal_close_view, name="modal-close"),
     path("courses/", course_list_view, name="courses-list"),
     path("courses/<int:course_id>/", course_detail_view, name="course-detail"),

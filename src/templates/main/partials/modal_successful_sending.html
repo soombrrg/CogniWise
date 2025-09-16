@@ -1,0 +1,17 @@
+<div id="modal" class="modal-plan relative">
+    <div class="absolute top-4 right-4 z-50">
+        <button hx-get="{% url 'main:modal-close' %}" hx-target="#modal" hx-swap="outerHTML" hx-trigger="click"  type="button"
+                class="close-btn w-10 h-10 bg-slate-800/80 hover:bg-rose-600/90 text-white rounded-full flex items-center justify-center transition duration-300 transform hover:scale-110 soft-neon-border"
+                aria-label="Закрыть диалоговое окно">
+            <i class="fas fa-times text-lg"></i>
+        </button>
+    </div>
+    <div class="bg-emerald-900/50 border border-emerald-600 rounded-xl p-4 mt-4">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle text-emerald-300 mr-3"></i>
+            <div>
+                <p class="text-emerald-300 text-sm">Спасибо! Ваши данные успешно отправлены, ожидайте ответ на указанный контакт от менеджера.</p>
+            </div>
+        </div>
+    </div>
+</div>
