@@ -1,5 +1,4 @@
 from pathlib import Path
-
 from environ import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,21 +24,20 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "whitenoise.runserver_nostatic",  # whitenoise should be upper then static, only for dev
     "django.contrib.staticfiles",
     # third-party
     "behaviors.apps.BehaviorsConfig",
     "rest_framework",
-    "whitenoise",
+    "minio_storage",
     # projects app
     "main",
     "users",
     "orders",
 ]
 
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # whitenoise middleware
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -108,16 +106,50 @@ USE_I18N = True
 USE_TZ = True
 
 
-STATIC_URL = "static/"
+# Static files
+USE_S3 = env("USE_S3", bool)
+if USE_S3:
+    STORAGES = {
+        "default": {
+            "BACKEND": "minio_storage.MinioMediaStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "minio_storage.MinioStaticStorage",
+        },
+    }
+    MINIO_STORAGE_ENDPOINT = env("MINIO_STORAGE_ENDPOINT")
+    MINIO_STORAGE_ACCESS_KEY = env("MINIO_ROOT_USER")
+    MINIO_STORAGE_SECRET_KEY = env("MINIO_ROOT_PASSWORD")
+    MINIO_STORAGE_MEDIA_BUCKET_NAME = "local-media"
+    MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET = True
+    MINIO_STORAGE_STATIC_BUCKET_NAME = "local-static"
+    MINIO_STORAGE_AUTO_CREATE_STATIC_BUCKET = True
+    MINIO_STORAGE_USE_HTTPS = env("MINIO_STORAGE_USE_HTTPS", bool)
+    PROTOCOL = "https" if MINIO_STORAGE_USE_HTTPS else "http"
+
+    STATIC_URL = (
+        f"{PROTOCOL}://{MINIO_STORAGE_ENDPOINT}/{MINIO_STORAGE_STATIC_BUCKET_NAME}/"
+    )
+    STATIC_ROOT = BASE_DIR / "staticfiles"
+
+    MEDIA_URL = (
+        f"{PROTOCOL}://{MINIO_STORAGE_ENDPOINT}/{MINIO_STORAGE_MEDIA_BUCKET_NAME}/"
+    )
+    MEDIA_ROOT = BASE_DIR / "mediafiles"
+else:
+    STATIC_URL = "/staticfiles/"
+    STATIC_ROOT = BASE_DIR / "staticfiles"
+    MEDIA_URL = "mediafiles/"
+    MEDIA_ROOT = BASE_DIR / "mediafiles"
+
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
-MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 
 # Custom Authentication
 AUTH_USER_MODEL = "users.CustomUser"
@@ -126,7 +158,8 @@ LOGIN_URL = "users:login"
 LOGIN_REDIRECT_URL = "users:profile"
 LOGOUT_REDIRECT_URL = "main:home"
 
-# Security settings
+
+# Security
 # SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # SECURE_SSL_REDIRECT = True
 #
@@ -136,8 +169,8 @@ LOGOUT_REDIRECT_URL = "main:home"
 # SECURE_CONTENT_TYPE_NOSNIFF = True
 # X_FRAME_OPTIONS = "DENY"
 
+# Mailing
 MAILING_MODE = env("MAILING_MODE")
-
 # Testing Mailing
 if MAILING_MODE == "test":
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

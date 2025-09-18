@@ -6,10 +6,11 @@ src/.env
 __pycache__
 .DS_Store
 *.sqlite3
-staticfiles/
-media/
-.venv
 
+postgres/
+minio/
+
+.venv
 venv/
 storage/
 .vscode/
