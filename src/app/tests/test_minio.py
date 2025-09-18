@@ -2,6 +2,7 @@ import logging
 
 import pytest
 from django.conf import settings
+
 from minio import Minio
 
 pytestmark = [pytest.mark.django_db]

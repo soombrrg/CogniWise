@@ -4,8 +4,8 @@ from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import (
-    PasswordResetView,
     PasswordResetConfirmView,
+    PasswordResetView,
 )
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
@@ -13,16 +13,16 @@ from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes, force_str
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from orders.models import Order
 from users.forms import (
+    CustomSetPasswordForm,
     CustomUserCreationForm,
     CustomUserLoginForm,
     CustomUserPasswordChangeForm,
-    CustomUserUpdateForm,
     CustomUserPasswordResetForm,
-    CustomSetPasswordForm,
+    CustomUserUpdateForm,
 )
 from users.models import CustomUser
 

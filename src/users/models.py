@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 
-from users.validators import phone_validator, birthday_validator
+from users.validators import birthday_validator, phone_validator
 
 
 class CustomUserManager(BaseUserManager):

@@ -6,9 +6,9 @@ from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.forms import (
     AuthenticationForm,
     PasswordChangeForm,
-    UserCreationForm,
     PasswordResetForm,
     SetPasswordForm,
+    UserCreationForm,
 )
 
 from app.forms import base_form_class

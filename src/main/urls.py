@@ -7,9 +7,9 @@ from main.views import (
     home_view,
     load_content_view,
     load_next_content_view,
-    modal_open_demo_view,
     modal_close_view,
     modal_open_contact_view,
+    modal_open_demo_view,
 )
 
 app_name = "main"

@@ -1,21 +1,21 @@
 from django.contrib.auth.views import (
-    PasswordResetDoneView,
     PasswordResetCompleteView,
+    PasswordResetDoneView,
 )
 from django.urls import path
 
 from users.views import (
+    CustomPasswordResetConfirmView,
+    CustomPasswordResetView,
     account_details_view,
-    password_change_view,
     edit_account_details_view,
+    email_verification_view,
     login_view,
     logout_view,
+    password_change_view,
     profile_view,
     register_view,
     update_account_details_view,
-    CustomPasswordResetView,
-    CustomPasswordResetConfirmView,
-    email_verification_view,
 )
 
 app_name = "users"
