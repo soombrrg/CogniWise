@@ -9,6 +9,7 @@ dependencies = [
     "django-behaviors>=0.5.1",
     "django-environ>=0.12.0",
     "django-minio-storage>=0.5.8",
+    "django-resized>=1.0.3",
     "djangorestframework>=3.16.1",
     "pillow>=11.3.0",
     "psycopg2-binary>=2.9.10",

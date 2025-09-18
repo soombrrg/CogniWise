@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+from django_resized import ResizedImageField
 
 from users.validators import birthday_validator, phone_validator
 
@@ -39,7 +40,31 @@ class CustomUser(AbstractUser):
     last_name = models.CharField(max_length=25, verbose_name="Фамилия")
     username = models.CharField(max_length=25, unique=True, null=True, blank=True)
 
-    # Additional Fields
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["first_name", "last_name"]
+
+    def __str__(self):
+        return self.email
+
+
+class CustomUserProfile(models.Model):
+    user = models.OneToOneField(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="profile",
+        verbose_name="Пользователь",
+    )
+    avatar = ResizedImageField(
+        size=[100, 100],
+        crop=["middle", "center"],
+        upload_to="avatars/",
+        default="avatars/default_user.png",
+        blank=True,
+        null=True,
+        verbose_name="Аватар",
+    )
     phone = models.CharField(
         max_length=20,
         null=True,
@@ -60,10 +85,9 @@ class CustomUser(AbstractUser):
         verbose_name="О себе",
     )
 
-    objects = CustomUserManager()
-
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["first_name", "last_name"]
+    class Meta:
+        verbose_name = "Профиль"
+        verbose_name_plural = "Профили"
 
     def __str__(self):
-        return self.email
+        return f"Профиль для: {self.user.email}"

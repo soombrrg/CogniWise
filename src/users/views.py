@@ -22,9 +22,10 @@ from users.forms import (
     CustomUserLoginForm,
     CustomUserPasswordChangeForm,
     CustomUserPasswordResetForm,
+    CustomUserProfileUpdateForm,
     CustomUserUpdateForm,
 )
-from users.models import CustomUser
+from users.models import CustomUser, CustomUserProfile
 
 
 def register_view(request):
@@ -178,34 +179,36 @@ def account_details_view(request):
 
 @login_required
 def edit_account_details_view(request):
-    form = CustomUserUpdateForm(instance=request.user)
-    return render(
-        request,
-        "users/partials/edit_account_details.html",
-        {"user": request.user, "form": form},
-    )
+    try:
+        profile = request.user.profile
+    except CustomUserProfile.DoesNotExist:
+        profile = CustomUserProfile(user=request.user)
 
-
-@login_required
-def update_account_details_view(request):
     if request.method == "POST":
-        form = CustomUserUpdateForm(request.POST, instance=request.user)
-        if form.is_valid():
-            user = form.save()
+        user_form = CustomUserUpdateForm(request.POST, instance=request.user)
+        profile_form = CustomUserProfileUpdateForm(
+            request.POST, request.FILES, instance=profile
+        )
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save()
+            profile = profile_form.save(commit=False)
+            profile.user = user
+            profile.save()
             messages.success(request, "Данные профиля обновлены!", extra_tags="success")
             return render(
                 request,
                 "users/partials/update_success.html",
-                {"user": user, "form": form},
+                {"user": user, "user_form": user_form, "profile_form": profile_form},
             )
         else:
             messages.error(
                 request, "Пожалуйста, исправьте ошибки в форме.", extra_tags="danger"
             )
     else:
-        form = CustomUserUpdateForm(instance=request.user)
+        user_form = CustomUserUpdateForm(instance=request.user)
+        profile_form = CustomUserProfileUpdateForm(instance=profile)
     return render(
         request,
         "users/partials/edit_account_details.html",
-        {"user": request.user, "form": form},
+        {"user": request.user, "user_form": user_form, "profile_form": profile_form},
     )

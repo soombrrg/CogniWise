@@ -12,6 +12,7 @@ from django.contrib.auth.forms import (
 )
 
 from app.forms import base_form_class
+from users.models import CustomUserProfile
 
 User = get_user_model()
 
@@ -156,6 +157,26 @@ class CustomUserUpdateForm(forms.ModelForm):
             }
         ),
     )
+
+    class Meta:
+        model = User
+        fields = (
+            "first_name",
+            "last_name",
+            "email",
+        )
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        if (
+            email
+            and User.objects.filter(email=email).exclude(id=self.instance.id).exists()
+        ):
+            raise forms.ValidationError("Этот email уже используется.")
+        return email
+
+
+class CustomUserProfileUpdateForm(forms.ModelForm):
     phone = forms.CharField(
         required=False,
         max_length=20,
@@ -167,7 +188,6 @@ class CustomUserUpdateForm(forms.ModelForm):
             }
         ),
     )
-
     birthday = forms.DateField(
         required=False,
         label="Дата рождения",
@@ -179,7 +199,6 @@ class CustomUserUpdateForm(forms.ModelForm):
             },
         ),
     )
-
     bio = forms.CharField(
         required=False,
         label="О себе",
@@ -191,19 +210,29 @@ class CustomUserUpdateForm(forms.ModelForm):
             }
         ),
     )
+    avatar = forms.ImageField(
+        required=False,
+        label="Аватар",
+        help_text="Рекомендуемый размер: 100x100px",
+        widget=forms.FileInput(  # FileInput
+            attrs={"class": base_form_class, "onchange": "previewImage(this)"}
+        ),
+    )
 
     class Meta:
-        model = User
-        fields = ("first_name", "last_name", "email", "birthday", "phone", "bio")
+        model = CustomUserProfile
+        fields = (
+            "birthday",
+            "phone",
+            "bio",
+            "avatar",
+        )
 
-    def clean_email(self):
-        email = self.cleaned_data.get("email")
-        if (
-            email
-            and User.objects.filter(email=email).exclude(id=self.instance.id).exists()
-        ):
-            raise forms.ValidationError("Этот email уже используется.")
-        return email
+    def clean_avatar(self):
+        avatar = self.cleaned_data.get("avatar")
+        if avatar and avatar.size > 2 * 1024 * 1024:
+            raise forms.ValidationError("Размер файла не должен превышать 2MB")
+        return avatar
 
     def clean_birthdate(self):
         birthdate = self.cleaned_data.get("birthdate")

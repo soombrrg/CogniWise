@@ -15,7 +15,6 @@ from users.views import (
     password_change_view,
     profile_view,
     register_view,
-    update_account_details_view,
 )
 
 app_name = "users"
@@ -34,11 +33,6 @@ urlpatterns += [
         "edit-account-details/",
         edit_account_details_view,
         name="edit-account-details",
-    ),
-    path(
-        "update-account-details/",
-        update_account_details_view,
-        name="update-account-details",
     ),
 ]
 
