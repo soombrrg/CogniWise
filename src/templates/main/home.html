@@ -134,9 +134,9 @@
                                 <p class="text-xs text-slate-400">Senior Python Developer</p>
                             </div>
                         </div>
-                        <a href="{% url 'main:course-detail' 1 %}">
+                        <a href="{% url 'main:courses-list' %}">
                             <button class="mt-6 w-full soft-glow-button py-2 px-4 rounded-md">
-                                Подробнее о курсе
+                                Подробнее
                             </button>
                         </a>
                     </div>
@@ -167,9 +167,9 @@
                                 <p class="text-xs text-slate-400">Full-stack Developer</p>
                             </div>
                         </div>
-                        <a href="{% url 'main:course-detail' 1 %}">
+                        <a href="{% url 'main:courses-list' %}">
                             <button class="mt-6 w-full soft-glow-button py-2 px-4 rounded-md">
-                                Подробнее о курсе
+                                Подробнее
                             </button>
                         </a>
                     </div>
@@ -200,9 +200,11 @@
                                 <p class="text-xs text-slate-400">Data Scientist</p>
                             </div>
                         </div>
-                        <button class="mt-6 w-full soft-glow-button py-2 px-4 rounded-md">
-                            Подробнее о курсе
-                        </button>
+                        <a href="{% url 'main:courses-list' %}">
+                            <button class="mt-6 w-full soft-glow-button py-2 px-4 rounded-md">
+                                Подробнее
+                            </button>
+                        </a>
                     </div>
                 </div>
             </div>

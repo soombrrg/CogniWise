@@ -195,11 +195,7 @@ def edit_account_details_view(request):
             profile.user = user
             profile.save()
             messages.success(request, "Данные профиля обновлены!", extra_tags="success")
-            return render(
-                request,
-                "users/partials/update_success.html",
-                {"user": user, "user_form": user_form, "profile_form": profile_form},
-            )
+            return redirect("users:profile")
         else:
             messages.error(
                 request, "Пожалуйста, исправьте ошибки в форме.", extra_tags="danger"

@@ -53,7 +53,7 @@ def checkout(request, course_id):
     except Exception as e:
         logger.error("Ошибка создания платежа: %s", str(e))
         order.delete()
-        messages.error(request, f"Ошибка обработки платежа: {str(e)}")
+        messages.error(request, f"Ошибка обработки платежа.")
         return render(
             request,
             "orders/checkout.html",

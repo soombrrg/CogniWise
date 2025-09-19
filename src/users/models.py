@@ -48,6 +48,12 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.email
 
+    def save(self, *args, **kwargs):
+        created = self.pk is None
+        super().save(*args, **kwargs)
+        if created:
+            CustomUserProfile.objects.create(user=self)
+
 
 class CustomUserProfile(models.Model):
     user = models.OneToOneField(
