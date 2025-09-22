@@ -10,6 +10,7 @@ from main.views import (
     modal_close_view,
     modal_open_contact_view,
     modal_open_demo_view,
+    course_search_view,
 )
 
 app_name = "main"
@@ -21,6 +22,7 @@ urlpatterns = [
     path("modal-open-contact/", modal_open_contact_view, name="modal-open-contact"),
     path("modal-close/", modal_close_view, name="modal-close"),
     path("courses/", course_list_view, name="courses-list"),
+    path("course-search/", course_search_view, name="course-search"),
     path("courses/<int:course_id>/", course_detail_view, name="course-detail"),
     path(
         "courses/<int:course_id>/load-next/<int:current_block_id>/",

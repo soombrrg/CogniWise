@@ -4,8 +4,10 @@ from django_resized import ResizedImageField
 
 
 class Course(models.Model):
-    title = models.CharField(max_length=200, verbose_name="Название курса")
-    description = models.TextField(blank=True, verbose_name="Описание курса")
+    title = models.CharField(max_length=100, verbose_name="Название курса")
+    description = models.TextField(
+        blank=True, verbose_name="Описание курса", max_length=250
+    )
     price = models.DecimalField(
         max_digits=10, decimal_places=2, default=129.90, verbose_name="Стоимость (RUB)"
     )
@@ -16,7 +18,7 @@ class Course(models.Model):
     class Meta:
         verbose_name = "Курс"
         verbose_name_plural = "Курсы"
-        ordering = ["updated_at", "created_at"]
+        ordering = ["-updated_at", "-created_at"]
 
     def __str__(self):
         return self.title
@@ -25,7 +27,10 @@ class Course(models.Model):
         created = self.pk is None
         super().save(*args, **kwargs)
         if created:
-            CourseProfile.objects.create(course=self)
+            try:
+                profile_exist = self.course_profile is not None
+            except CourseProfile.DoesNotExist:
+                CourseProfile.objects.create(course=self)
 
 
 class CourseProfile(models.Model):

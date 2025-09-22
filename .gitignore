@@ -269,7 +269,14 @@ pyrightconfig.json
 .idea
 
 staticfiles/
-static
+static/
 media/
+
 postgres/
-minio/
+
+# MinIO exclusion all except default-static-pic
+minio/config
+.minio.sys
+local-media
+admin
+rest_framework

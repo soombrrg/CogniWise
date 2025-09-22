@@ -1,16 +1,14 @@
 {% extends 'base.html' %}
 {% load format_text %}
 {% block title %}{{ course.title }} - CogniWise{% endblock %}
+
 {% block content %}
-<!-- Боковая панель содержания курса -->
-<div x-data="{ sidebarOpen: true }" class="fixed right-0 top-16 h-[calc(100vh-4rem)] z-30">
-    <!-- Кнопка toggle -->
+<div x-data="{ sidebarOpen: false }" class="fixed right-0 top-16 h-[calc(100vh-4rem)] z-30">
     <button @click="sidebarOpen = !sidebarOpen"
             class="absolute -left-8 top-4 w-8 h-8 bg-slate-900/90 backdrop-blur-md rounded-l-md soft-neon-border flex items-center justify-center z-40">
         <i class="fas text-emerald-300" :class="sidebarOpen ? 'fa-chevron-right' : 'fa-chevron-left'"></i>
     </button>
 
-    <!-- Панель содержания -->
     <div x-show="sidebarOpen"
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="translate-x-full opacity-0"
@@ -21,17 +19,14 @@
          class="w-64 h-full bg-slate-900/95 backdrop-blur-md border-l border-slate-700/50 overflow-y-auto scrollbar-hide">
 
         <div class="p-4">
-            <!-- Заголовок -->
             <h2 class="text-lg font-bold orbitron-font soft-neon-text mb-4 flex items-center justify-between">
                 <span>Содержание</span>
                 <i class="fas fa-list-ul text-emerald-300"></i>
             </h2>
 
-            <!-- Блоки курса -->
             <div class="space-y-3">
                 {% for block in course.blocks.all %}
                 <div class="bg-slate-800/50 rounded-lg p-3 soft-neon-border">
-                    <!-- Блок -->
                     <div :class="{ 'text-emerald-300 soft-neon-glow': activeContent === 'block-{{ block.id }}' }"
                          class="font-medium text-white mb-2 cursor-pointer hover:text-emerald-300 transition-colors">
                         <a href="#block-{{ block.id }}" class="flex items-center justify-between">
@@ -43,7 +38,6 @@
                         </a>
                     </div>
 
-                    <!-- Подблоки -->
                     <div class="ml-5 space-y-1 border-l border-slate-600/50 pl-3">
                         {% for subblock in block.subblocks.all %}
                         <div :class="{ 'text-emerald-300': activeContent === 'subblock-{{ subblock.id }}' }"
@@ -61,50 +55,44 @@
         </div>
     </div>
 </div>
-<!--Основной контент-->
 <section class="py-12 px-4 sm:py-16">
 	<div :class="{ 'lg:mr-64': sidebarOpen }" class="transition-margin duration-300 pt-4">
-			<div class="container mx-auto">
-				<h1 class="text-3xl sm:text-4xl font-bold mb-6 text-white fade-in bg-gradient-to-r from-emerald-400 to-cyan-600 bg-clip-text text-transparent">{{ course.title }}</h1>
-				<p class="text-gray-400 text-sm sm:text-base mb-8 fade-in delay-100">{{ course.description| format_text | safe }}</p>
-				{% if first_block %}
-					<div id="block-{{ first_block.id }}"
-						 class="mb-6 p-5 border rounded-lg card-hover soft-fade-in delay-200 visible"
-						 x-data="{ id: 'block-{{ first_block.id }}' }"
-						 x-intersect="activeContent = id"
-						 x-init="console.log('First block initialized: block-{{ first_block.id }}')">
-						<h2 class="text-lg sm:text-2xl font-semibold text-white mb-4">{{ first_block.title }}</h2>
-						<div class="prose prose-invert text-sm sm:text-base">{{ first_block.content | format_text | safe }}</div>
+		<div class="container mx-auto">
+			<h1 class="text-3xl sm:text-4xl font-bold mb-6 text-white fade-in bg-gradient-to-r from-emerald-400 to-cyan-600 bg-clip-text text-transparent">{{ course.title }}</h1>
+			<p class="text-gray-400 text-sm sm:text-base mb-8 fade-in delay-100">{{ course.description| format_text | safe }}</p>
+			{% if first_block %}
+				<div id="block-{{ first_block.id }}"
+					 class="mb-6 p-5 border rounded-lg card-hover soft-fade-in delay-200 visible"
+					 x-data="{ id: 'block-{{ first_block.id }}' }"
+					 x-intersect="activeContent = id">
+					<h2 class="text-lg sm:text-2xl font-semibold text-white mb-4">{{ first_block.title }}</h2>
+					<div class="prose prose-invert text-sm sm:text-base">{{ first_block.content | format_text | safe }}</div>
+				</div>
+				{% if first_subblock %}
+					<div id="subblock-{{ first_subblock.id }}"
+						 class="mb-6 px-5 pb-5 bg-gray-800 border border-gray-700 rounded-lg card-hover fade-in delay-300 visible"
+						 x-data="{ id: 'subblock-{{ first_subblock.id }}' }"
+						 x-intersect="activeContent = id">
+						<div class="ml-4 sm:ml-6 mt-3 sm:mt-4">
+							<h3 class="text-base sm:text-xl font-medium text-white mb-2">{{ first_subblock.title }}</h3>
+							<div class="prose prose-invert text-sm sm:text-base">{{ first_subblock.content | format_text | safe }}</div>
+						</div>
 					</div>
-					{% if first_subblock %}
-						<div id="subblock-{{ first_subblock.id }}"
-							 class="mb-6 p-5 bg-gray-800 border border-gray-700 rounded-lg card-hover fade-in delay-300 visible"
-							 x-data="{ id: 'subblock-{{ first_subblock.id }}' }"
-							 x-intersect="activeContent = id"
-							 x-init="console.log('First subblock initialized: subblock-{{ first_subblock.id }}')">
-							<div class="ml-4 sm:ml-6 mt-3 sm:mt-4">
-								<h3 class="text-base sm:text-xl font-medium text-white mb-2">{{ first_subblock.title }}</h3>
-								<div class="prose prose-invert text-sm sm:text-base">{{ first_subblock.content | format_text | safe }}</div>
-							</div>
-						</div>
-						<div hx-get="{% url 'main:load-next-content-with-subblock' course_id=course.id current_block_id=first_block.id current_subblock_id=first_subblock.id %}"
-							 hx-trigger="revealed"
-							 hx-swap="afterend"
-							 x-init="console.log('HTMX trigger initialized for first subblock')">
-						</div>
-					{% else %}
-						<div hx-get="{% url 'main:load-next-content' course_id=course.id current_block_id=first_block.id %}"
-							 hx-trigger="revealed"
-							 hx-swap="afterend"
-							 x-init="console.log('HTMX trigger initialized for first block')">
-						</div>
-					{% endif %}
+					<div hx-get="{% url 'main:load-next-content-with-subblock' course_id=course.id current_block_id=first_block.id current_subblock_id=first_subblock.id %}"
+						 hx-trigger="revealed"
+						 hx-swap="afterend">
+					</div>
+				{% else %}
+					<div hx-get="{% url 'main:load-next-content' course_id=course.id current_block_id=first_block.id %}"
+						 hx-trigger="revealed"
+						 hx-swap="afterend">
+					</div>
 				{% endif %}
-			</div>
+			{% endif %}
+		</div>
 	</div>
 </section>
 <script>
-// Добавьте этот скрипт для работы навигации
 document.addEventListener('DOMContentLoaded', function() {
     // Плавная прокрутка к элементам
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {

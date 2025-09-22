@@ -8,13 +8,14 @@ from users.validators import birthday_validator, phone_validator
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, password=None, **extra_fields):
         if not email:
-            raise ValueError("The email field must be set")
+            raise ValueError("Поле Email должно быть указанно")
         email = self.normalize_email(email)
         user = self.model(
             email=email, first_name=first_name, last_name=last_name, **extra_fields
         )
         user.set_password(password)
         user.save(using=self._db)
+
         return user
 
     def create_superuser(
@@ -24,9 +25,9 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", True)
 
         if extra_fields.get("is_staff") is not True:
-            raise ValueError("Superuser must have is_staff=True.")
+            raise ValueError("У суперпользователя должно быть: is_staff=True.")
         if extra_fields.get("is_superuser") is not True:
-            raise ValueError("Superuser must have is_superuser=True.")
+            raise ValueError("У суперпользователя должно быть: is_superuser=True.")
 
         return self.create_user(email, first_name, last_name, password, **extra_fields)
 
@@ -52,7 +53,10 @@ class CustomUser(AbstractUser):
         created = self.pk is None
         super().save(*args, **kwargs)
         if created:
-            CustomUserProfile.objects.create(user=self)
+            try:
+                profile_exist = self.profile is not None
+            except CustomUserProfile.DoesNotExist:
+                CustomUserProfile.objects.create(user=self)
 
 
 class CustomUserProfile(models.Model):

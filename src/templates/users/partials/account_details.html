@@ -1,5 +1,5 @@
+{% load static %}
 {% include 'users/partials/messages.html' %}
-
 <div class="bg-slate-800/50 backdrop-blur-md rounded-2xl p-6 soft-neon-border mb-6">
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold text-white orbitron-font">
@@ -14,17 +14,19 @@
     {% if purchased_courses %}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {% for course in purchased_courses %}
-        <div class="bg-slate-700/50 rounded-xl p-4 soft-neon-border hover:bg-slate-700/70 transition duration-300">
+        <div class="bg-card-profile-gradient bg-slate-700/50 rounded-xl p-4 border border-gray-700 hover:bg-slate-700/70 transition duration-300">
             <div class="flex items-start mb-3">
-                <div class="w-12 h-12 rounded-lg bg-slate-600 flex items-center justify-center mr-3 soft-neon-glow">
-                    <i class="fas fa-code text-emerald-300"></i>
+                <div class="w-12 h-12 border border-gray-700 rounded-lg bg-gray-700 flex items-center justify-center mr-3 overflow-hidden">
+                    {% if course.course_profile.cover %}
+                        <img src="{{ course.course_profile.cover.url }}" alt="{{ course.title }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <img src="{% static 'covers/default_cover.jpeg' %}" alt="{{ course.title }}" class="w-full h-full object-cover">
+                    {% endif %}
                 </div>
-                <div>
-                    <h3 class="font-semibold text-white mb-1">{{ course.title }}</h3>
-                </div>
+                <h3 class="font-semibold text-white mb-1">{{ course.title|truncatechars:28 }}</h3>
             </div>
-            <a href="{% url 'main:course-detail' course.id %}" class="w-full soft-glow-button py-2 px-4 rounded-lg text-sm font-medium text-center block">
-                Продолжить обучение
+            <a href="{% url 'main:course-detail' course.id %}" class="min-w-max soft-glow-button py-2 px-4 rounded-lg text-sm font-medium text-center">
+                Продолжить
             </a>
         </div>
         {% endfor %}
@@ -51,7 +53,7 @@
     </h2>
 
     {% if user.orders.all %}
-        <div class="overflow-x-auto rounded-lg soft-neon-border">
+        <div class="overflow-x-auto rounded-lg border border-gray-700 mb-2">
             <table class="w-full text-slate-200">
                 <thead>
                     <tr class="bg-slate-700/50 border-b border-slate-600/50">
@@ -69,15 +71,12 @@
                             <td class="py-4 px-4">{{ order.created_at|date:"d.m.Y" }}</td>
                             <td class="py-4 px-4">
                                 <div class="flex items-center">
-                                    <div class="w-8 h-8 rounded-md bg-slate-600 flex items-center justify-center mr-3 soft-neon-glow">
-                                        <i class="fas fa-code text-xs text-emerald-300"></i>
-                                    </div>
-                                    <span class="text-slate-200">{{ order.course.title }}</span>
+                                    <span class="text-slate-200">{{ order.course.title|truncatechars:38 }}</span>
                                 </div>
                             </td>
-                            <td class="py-4 px-4 text-emerald-300 font-semibold">{{ order.total_price }} ₽</td>
+                            <td class="py-4 px-4 text-emerald-300 font-semibold min-w-max" >{{ order.total_price }}₽</td>
                             <td class="py-4 px-4">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium
+                                <span class="min-w-max inline-flex items-center px-3 py-1 rounded-full text-xs font-medium
                                     {% if order.status == 'completed' %}
                                         bg-emerald-400/20 text-emerald-300
                                     {% elif order.status == 'pending' %}

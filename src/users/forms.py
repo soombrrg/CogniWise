@@ -214,7 +214,7 @@ class CustomUserProfileUpdateForm(forms.ModelForm):
         required=False,
         label="Аватар",
         help_text="Рекомендуемый размер: 100x100px",
-        widget=forms.FileInput(  # FileInput
+        widget=forms.FileInput(
             attrs={"class": base_form_class, "onchange": "previewImage(this)"}
         ),
     )

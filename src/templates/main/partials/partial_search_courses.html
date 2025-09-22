@@ -1,0 +1,43 @@
+{% load static %}
+{% for course in courses %}
+    <div class="bg-card bg-card-gradient bg-gray-800 border border-gray-700 rounded-lg overflow-hidden course-card fade-in-delay-200"
+         @click="openModal('{{ course.id }}', '{{ course.title|escapejs }}', '{{ course.price }}')">
+        <div class="w-full h-60 bg-gray-700 flex items-center justify-center overflow-hidden">
+            {% if course.course_profile.cover %}
+                <img src="{{ course.course_profile.cover.url }}" alt="{{ course.title }}" class="w-full h-full object-cover">
+            {% else %}
+                <img src="{% static 'covers/default_cover.jpeg' %}" alt="{{ course.title }}" class="w-full h-full object-cover">
+            {% endif %}
+        </div>
+        <div class="p-6">
+            <h3 class="text-xl font-semibold text-white mb-2">{{ course.title }}</h3>
+            <p class="text-gray-400 mb-4">{{ course.description|truncatechars:155 }}</p>
+            <div class="flex items-center gap-4 text-sm text-gray-400 mb-4">
+                <div class="flex items-center gap-1">
+                    <i class="fas fa-clock"></i>
+                    {{ course.course_profile.hours_to_complete }} часов
+                </div>
+                <div class="flex items-center gap-1">
+                    <i class="fas fa-users"></i>
+                    {{ course.course_profile.number_of_students }} студентов
+                </div>
+            </div>
+            <div class="flex justify-between items-center">
+                <div>
+                    <span class="text-2xl font-bold text-emerald-400">₽{{ course.price }}</span>
+                    <span class="text-gray-400 line-through ml-2">₽{{ course.price|add:2500 }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% empty %}
+    <div class="col-span-full text-center py-12">
+        <div class="max-w-md mx-auto">
+            <div class="text-6xl mb-4 text-gray-400">
+                <i class="fas fa-question-circle"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-slate-400 mb-2">Курсы пока не добавлены</h3>
+            <p class="text-gray-400 text-lg mb-6">Мы работаем над созданием новых образовательных программ. Следите за обновлениями!</p>
+        </div>
+    </div>
+{% endfor %}

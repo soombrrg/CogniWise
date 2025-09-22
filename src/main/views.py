@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
@@ -11,8 +12,7 @@ from orders.models import Order
 
 
 def home_view(request):
-    courses = Course.objects.all().order_by("id")[:3]
-    return render(request, "main/home.html", {"courses": courses})
+    return render(request, "main/home.html")
 
 
 def about_view(request):
@@ -43,6 +43,18 @@ def about_view(request):
 def course_list_view(request):
     courses = Course.objects.all()
     return render(request, "main/course_list.html", {"courses": courses})
+
+
+def course_search_view(request):
+    query = request.GET.get("query", "")
+    courses = Course.objects.filter(
+        Q(title__icontains=query) | Q(description__icontains=query)
+    )[:5]
+    return render(
+        request,
+        "main/partials/partial_search_courses.html",
+        {"courses": courses},
+    )
 
 
 @login_required
