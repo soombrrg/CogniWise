@@ -13,8 +13,20 @@ from yookassa import Configuration, Payment
 
 from main.models import Course
 from orders.models import Order
+from orders.services import (
+    create_order,
+    is_purchased,
+)
+
+formatter = logging.Formatter(
+    fmt="[{asctime}] #{levelname:8} {filename}:" "{lineno} - {name} - {message}",
+    style="{",
+)
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
 
 logger = logging.getLogger(__name__)
+logger.addHandler(handler)
 Configuration.account_id = settings.YOOKASSA_SHOP_ID
 Configuration.secret_key = settings.YOOKASSA_SECRET_KEY
 
@@ -24,41 +36,31 @@ def checkout(request, course_id):
     course = get_object_or_404(Course, id=course_id)
 
     # Check if user already bought course
-    if Order.objects.filter(
-        user=request.user,
-        course=course,
-        status="completed",
-    ).exists():
-        messages.info(request, "Вы уже приобрели этот курс!")
+    if is_purchased(request.user, course_id):
         return redirect("main:course-detail", course_id=course.id)
 
     course_price = course.price
-    if request.method != "POST":
-        return render(
-            request,
-            "orders/checkout.html",
-            {"course": course, "total_price": course_price},
-        )
-    try:
-        order = Order.objects.create(
-            user=request.user,
-            course=course,
-            total_price=course_price,
-            status="pending",
-        )
+    if request.method == "POST":
+        try:
+            order = create_order(request.user, course, course_price, "pending")
 
-        payment = create_yookassa_payment(order, request)
-        return redirect(payment.confirmation.confirmation_url)
+            payment = create_yookassa_payment(order, request)
+            return redirect(payment.confirmation.confirmation_url)
 
-    except Exception as e:
-        logger.error("Ошибка создания платежа: %s", str(e))
-        order.delete()
-        messages.error(request, f"Ошибка обработки платежа.")
-        return render(
-            request,
-            "orders/checkout.html",
-            {"course": course, "total_price": course_price},
-        )
+        except Exception as e:
+            logger.error("Ошибка создания платежа: %s", str(e))
+            order.delete()
+            messages.error(request, "Ошибка обработки платежа.")
+            return render(
+                request,
+                "orders/checkout.html",
+                {"course": course, "total_price": course_price},
+            )
+    return render(
+        request,
+        "orders/checkout.html",
+        {"course": course, "total_price": course_price},
+    )
 
 
 def create_yookassa_payment(order, request):
@@ -79,7 +81,6 @@ def create_yookassa_payment(order, request):
     discounted_total_rub = order.get_discounted_total_price()
 
     try:
-        # Generating key for idempotence
         idempotence_key = str(uuid4())
         payment = Payment.create(
             {
@@ -112,7 +113,7 @@ def create_yookassa_payment(order, request):
         order.save()
         return payment
     except Exception as e:
-        logger.error("Ошибка создания платежа ЮKassa: %s", str(e))
+        logger.error("Ошибка при создании платежа ЮKassa: %s", str(e))
         raise
 
 
@@ -126,7 +127,6 @@ def yookassa_webhook(request):
     logger.info(
         f"ЮKassa webhook получен | IP: {request.META['REMOTE_ADDR']} | User-Agent: {request.META['HTTP_USER_AGENT']}"
     )
-
     try:
         raw_body = request.body.decode("utf-8")
         event_json = json.loads(raw_body)
@@ -135,7 +135,7 @@ def yookassa_webhook(request):
         payment_id = payment.get("id")
 
         logger.info(
-            "Обработка события ЮKassa: %s | Payment ID: %s", event_type, payment_id
+            "Обработка event ЮKassa: %s | Payment ID: %s", event_type, payment_id
         )
 
         metadata = payment.get("metadata", {})

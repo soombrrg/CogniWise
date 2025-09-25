@@ -9,10 +9,11 @@ dependencies = [
     "django-behaviors>=0.5.1",
     "django-environ>=0.12.0",
     "django-minio-storage>=0.5.8",
+    "django-redis>=6.0.0",
     "django-resized>=1.0.3",
-    "djangorestframework>=3.16.1",
     "pillow>=11.3.0",
-    "psycopg2-binary>=2.9.10",
+    "djangorestframework>=3.16.1",
+    "psycopg[binary,pool]>=3.2.10",
     "uvicorn>=0.35.0",
     "yookassa>=3.7.0",
 ]
@@ -20,6 +21,8 @@ dependencies = [
 [dependency-groups]
 dev = [
     "black>=25.1.0",
+    "django-debug-toolbar>=6.0.0",
+    "django-debug-toolbar-force>=0.2",
     "flake8>=7.3.0",
     "flake8-bandit>=4.1.1",
     "flake8-django>=1.1.1",

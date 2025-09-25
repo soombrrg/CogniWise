@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django_resized import ResizedImageField
@@ -28,7 +30,7 @@ class Course(models.Model):
         super().save(*args, **kwargs)
         if created:
             try:
-                profile_exist = self.course_profile is not None
+                self.course_profile
             except CourseProfile.DoesNotExist:
                 CourseProfile.objects.create(course=self)
 
@@ -65,21 +67,61 @@ class CourseProfile(models.Model):
         return f"Профиль для курса: {self.course.title}"
 
 
+class BlockBaseManager(models.Manager):
+    def get_max_order(self, filter_fields: Optional[dict] = None):
+        filter_fields = filter_fields or {}
+
+        result = self.only("order").filter(**filter_fields).order_by("order").last()
+        max_order = result.order
+        return max_order
+
+    def do_reordering(self, filter_fields: Optional[dict] = None):
+        filter_fields = filter_fields or {}
+
+        course_subblocks = list(
+            self.only("order").filter(**filter_fields).order_by("order")
+        )
+        for index, subblock in enumerate(course_subblocks, 1):
+            if subblock.order != index:
+                subblock.order = index
+        self.bulk_update(course_subblocks, ["order"])
+
+
 class Block(models.Model):
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, related_name="blocks", verbose_name="Курс"
     )
     title = models.CharField(max_length=200, verbose_name="Название блока")
     content = models.TextField(verbose_name="Содержимое блока")
-    order = models.PositiveIntegerField(default=0, verbose_name="Порядок")
+    order = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Порядок",
+    )
+
+    objects = BlockBaseManager()
 
     class Meta:
         verbose_name = "Блок"
         verbose_name_plural = "Блоки"
-        ordering = ["order"]
+        ordering = ["course", "order"]
+        unique_together = ("course", "order")
 
     def __str__(self):
         return f"{self.course.title} - {self.title}"
+
+    def save(self, *args, **kwargs):
+        if self.pk is None and self.order is None:
+            max_order = Block.objects.get_max_order({"course": self.course})
+            self.order = max_order + 1
+
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        course = self.course
+        # For order resetting
+        super().delete(*args, **kwargs)
+
+        Block.objects.do_reordering({"course": course})
 
 
 class SubBlock(models.Model):
@@ -88,12 +130,29 @@ class SubBlock(models.Model):
     )
     title = models.CharField(max_length=200, verbose_name="Название подблока")
     content = models.TextField(verbose_name="Содержимое подблока")
-    order = models.PositiveIntegerField(default=0, verbose_name="Порядок")
+    order = models.PositiveIntegerField(blank=True, verbose_name="Порядок")
+
+    objects = BlockBaseManager()
 
     class Meta:
         verbose_name = "Подблок"
         verbose_name_plural = "Подблоки"
-        ordering = ["order"]
+        ordering = ["block", "order"]
+        unique_together = ("block", "order")
 
     def __str__(self):
         return f"{self.block.title} - {self.title}"
+
+    def save(self, *args, **kwargs):
+        if self.pk is None and self.order is None:
+            max_order = SubBlock.objects.get_max_order({"block": self.block})
+            self.order = max_order + 1
+
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        block = self.block
+        # For order resetting
+        super().delete(*args, **kwargs)
+
+        SubBlock.objects.do_reordering({"block": block})

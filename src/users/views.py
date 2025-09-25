@@ -1,21 +1,13 @@
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import (
     PasswordResetConfirmView,
     PasswordResetView,
 )
-from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import send_mail
 from django.shortcuts import redirect, render
-from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.utils.encoding import force_bytes, force_str
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
-from orders.models import Order
 from users.forms import (
     CustomSetPasswordForm,
     CustomUserCreationForm,
@@ -25,7 +17,13 @@ from users.forms import (
     CustomUserProfileUpdateForm,
     CustomUserUpdateForm,
 )
-from users.models import CustomUser, CustomUserProfile
+from users.services.check import is_verified_by_token
+from users.services.fetching import (
+    get_profile_by_user,
+    get_user_by_uidb64,
+    get_user_profile_data,
+)
+from users.services.mailing import secret_email_context_gen, send_verification_email
 
 
 def register_view(request):
@@ -37,7 +35,8 @@ def register_view(request):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
-            send_verification_email(request, user)
+            context = secret_email_context_gen(request, user)
+            send_verification_email(context)
             return render(
                 request,
                 "users/registration/verification_sent.html",
@@ -50,48 +49,16 @@ def register_view(request):
     return render(request, "users/register.html", {"form": form})
 
 
-def send_verification_email(request, user):
-    subject = "Подтверждение регистрации"
-    current_site = get_current_site(request)
-    user_email = user.email
-
-    context = {
-        "user": user,
-        "email": user_email,
-        "domain": current_site.domain,
-        "site_name": current_site.name,
-        "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-        "token": default_token_generator.make_token(user),
-        "protocol": "https" if request.is_secure() else "http",
-    }
-
-    message = render_to_string("users/registration/verification_email.html", context)
-
-    send_mail(
-        subject,
-        message,
-        settings.DEFAULT_FROM_EMAIL,
-        [user_email],
-        html_message=message,
-    )
-
-
 def email_verification_view(request, uidb64, token):
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = CustomUser.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
-        user = None
-
-    if user is not None and default_token_generator.check_token(user, token):
+    user = get_user_by_uidb64(uidb64)
+    if is_verified_by_token(user, token):
         user.is_active = True
         user.email_verified = True
         user.save()
-        login(request, user, backend="django.contrib.auth.backends.ModelBackend")
         messages.success(request, "Регистрация прошла успешно!")
+        login(request, user, backend="django.contrib.auth.backends.ModelBackend")
         return redirect("users:profile")
-    else:
-        return render(request, "users/registration/verification_failed.html")
+    return render(request, "users/registration/verification_failed.html")
 
 
 def login_view(request):
@@ -120,14 +87,21 @@ def logout_view(request):
 
 @login_required
 def profile_view(request):
-    purchased_courses = [
-        order.course
-        for order in Order.objects.filter(user=request.user, status="completed")
-    ]
+    user_profile_data = get_user_profile_data(request.user)
     return render(
         request,
         "users/profile.html",
-        {"user": request.user, "purchased_courses": purchased_courses},
+        {"user": request.user, **user_profile_data},
+    )
+
+
+@login_required
+def profile_partial_view(request):
+    user_profile_data = get_user_profile_data(request.user)
+    return render(
+        request,
+        "users/partials/profile_partial.html",
+        {"user": request.user, **user_profile_data},
     )
 
 
@@ -158,10 +132,7 @@ def password_change_view(request):
                 "users/partials/password_change.html",
                 {"user": user, "form": form},
             )
-        else:
-            messages.error(
-                request, "Пожалуйста, исправьте ошибки.", extra_tags="danger"
-            )
+        messages.error(request, "Пожалуйста, исправьте ошибки.", extra_tags="danger")
     else:
         form = CustomUserPasswordChangeForm(user=request.user)
     return render(
@@ -172,17 +143,8 @@ def password_change_view(request):
 
 
 @login_required
-def account_details_view(request):
-    user = CustomUser.objects.get(id=request.user.id)
-    return render(request, "users/partials/account_details.html", {"user": user})
-
-
-@login_required
 def edit_account_details_view(request):
-    try:
-        profile = request.user.profile
-    except CustomUserProfile.DoesNotExist:
-        profile = CustomUserProfile(user=request.user)
+    profile = get_profile_by_user(request.user)
 
     if request.method == "POST":
         user_form = CustomUserUpdateForm(request.POST, instance=request.user)

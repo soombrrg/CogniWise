@@ -76,12 +76,6 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = ("first_name", "last_name", "email", "password1", "password2")
 
-    def clean_email(self):
-        email = self.cleaned_data.get("email")
-        if User.objects.filter(email=email).exists():
-            raise forms.ValidationError("Этот email уже используется.")
-        return email
-
     def save(self, commit=True):
         user = super().save(commit=False)
         user.username = None
@@ -165,15 +159,6 @@ class CustomUserUpdateForm(forms.ModelForm):
             "last_name",
             "email",
         )
-
-    def clean_email(self):
-        email = self.cleaned_data.get("email")
-        if (
-            email
-            and User.objects.filter(email=email).exclude(id=self.instance.id).exists()
-        ):
-            raise forms.ValidationError("Этот email уже используется.")
-        return email
 
 
 class CustomUserProfileUpdateForm(forms.ModelForm):

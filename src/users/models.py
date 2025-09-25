@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.core.cache import cache
 from django.db import models
 from django_resized import ResizedImageField
 
@@ -54,7 +55,7 @@ class CustomUser(AbstractUser):
         super().save(*args, **kwargs)
         if created:
             try:
-                profile_exist = self.profile is not None
+                self.profile
             except CustomUserProfile.DoesNotExist:
                 CustomUserProfile.objects.create(user=self)
 
@@ -101,3 +102,12 @@ class CustomUserProfile(models.Model):
 
     def __str__(self):
         return f"Профиль для: {self.user.email}"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        cache_key = f"user_avatar_url_{self.user.id}"
+        avatar_url = cache.get(cache_key, None)
+        if self.avatar and avatar_url != self.avatar.url:
+            avatar_url = self.avatar.url
+        cache.set(cache_key, avatar_url, 1800)

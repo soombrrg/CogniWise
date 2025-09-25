@@ -7,12 +7,12 @@ from django.urls import path
 from users.views import (
     CustomPasswordResetConfirmView,
     CustomPasswordResetView,
-    account_details_view,
     edit_account_details_view,
     email_verification_view,
     login_view,
     logout_view,
     password_change_view,
+    profile_partial_view,
     profile_view,
     register_view,
 )
@@ -27,8 +27,8 @@ urlpatterns = [
 # Profile
 urlpatterns += [
     path("profile/", profile_view, name="profile"),
+    path("profile-partial/", profile_partial_view, name="profile-partial"),
     path("password-change/", password_change_view, name="password_change"),
-    path("account-details/", account_details_view, name="account-details"),
     path(
         "edit-account-details/",
         edit_account_details_view,

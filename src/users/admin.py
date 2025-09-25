@@ -11,6 +11,13 @@ class CustomUserProfileInline(admin.StackedInline):
     fields = ("avatar", "phone", "birthday", "bio")
 
 
+@admin.register(CustomUserProfile)
+class CustomUserProfileAdmin(admin.ModelAdmin):
+    list_display = ("user", "avatar", "phone", "birthday")
+    search_fields = ("user__email", "phone")
+
+
+@admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
     inlines = [CustomUserProfileInline]
@@ -63,7 +70,3 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
     )
-
-
-admin.site.register(CustomUserProfile)
-admin.site.register(CustomUser, CustomUserAdmin)

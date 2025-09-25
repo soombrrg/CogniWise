@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from main.models import Block, Course, SubBlock, CourseProfile
+from main.models import Block, Course, CourseProfile, SubBlock
 
 
 class BlockInlineBase(admin.StackedInline):
@@ -32,7 +32,7 @@ class CourseAdmin(admin.ModelAdmin):
 @admin.register(CourseProfile)
 class CourseProfileAdmin(admin.ModelAdmin):
     list_display = ("course", "cover", "hours_to_complete", "number_of_students")
-    search_fields = ("cover",)
+    search_fields = ("course__title", "cover")
 
 
 @admin.register(Block)

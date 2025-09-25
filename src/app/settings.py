@@ -17,7 +17,6 @@ DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
-
 # Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -56,6 +55,7 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                "main.context_processors.user_avatar",  # caching user avatar
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
@@ -73,6 +73,9 @@ DATABASES = {
     "default": {
         **env.db_url("DATABASE_URL"),
         "ATOMIC_REQUESTS": True,
+        "OPTIONS": {
+            "pool": True,
+        },
     }
 }
 CACHES = {
@@ -159,16 +162,17 @@ LOGIN_URL = "users:login"
 LOGIN_REDIRECT_URL = "users:profile"
 LOGOUT_REDIRECT_URL = "main:home"
 
-
 # Security
-# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-# SECURE_SSL_REDIRECT = True
-#
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
-# SECURE_BROWSER_XSS_FILTER = True
-# SECURE_CONTENT_TYPE_NOSNIFF = True
-# X_FRAME_OPTIONS = "DENY"
+SECURITY_MODE = env("SECURITY_MODE")
+if SECURITY_MODE == "prod":
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_SSL_REDIRECT = True
+
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = "DENY"
 
 # Mailing
 MAILING_MODE = env("MAILING_MODE")
@@ -202,3 +206,17 @@ YOOKASSA_VAT_CODE = env("YOOKASSA_VAT_CODE")
 from yookassa import Configuration  # noqa
 
 Configuration.configure(YOOKASSA_SHOP_ID, YOOKASSA_SECRET_KEY)
+
+
+if DEBUG:
+    INTERNAL_IPS = ["127.0.0.1"]
+    INSTALLED_APPS += ("debug_toolbar",)
+    MIDDLEWARE += (
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+        "debug_toolbar_force.middleware.ForceDebugToolbarMiddleware",
+    )
+    LOGGING = {
+        "version": 1,
+        "handlers": {"console": {"class": "logging.StreamHandler"}},
+        "loggers": {"django.db.backends": {"handlers": ["console"], "level": "DEBUG"}},
+    }

@@ -280,3 +280,4 @@ minio/config
 local-media
 admin
 rest_framework
+debug_toolbar

@@ -2,8 +2,8 @@
 <div class="bg-slate-800/50 backdrop-blur-md rounded-2xl p-6 soft-neon-border mb-6">
     <div class="text-center">
         <div class="w-24 h-24 rounded-full mx-auto bg-slate-700 flex items-center justify-center mb-4">
-            {% if user.profile.avatar %}
-                <img src="{{ user.profile.avatar.url }}" alt="Аватар" class="w-24 h-24 rounded-full object-cover soft-neon-border">
+            {% if avatar_url %}
+                <img src="{{ avatar_url }}" alt="Аватар" class="w-24 h-24 rounded-full object-cover soft-neon-border">
             {% else %}
                 <img src="{% static 'avatars/default_user.png' %}" alt="Аватар" class="w-24 h-24 rounded-full object-cover soft-neon-border">
             {% endif %}
