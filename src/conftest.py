@@ -1,12 +1,12 @@
 import pytest
 from mixer.backend.django import mixer as _mixer
 
-from app.tests.api_clients import AppTestClient
+from app.tests.test_clients import AppClient
 
 
 @pytest.fixture
 def api():
-    return AppTestClient()
+    return AppClient()
 
 
 @pytest.fixture

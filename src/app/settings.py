@@ -6,16 +6,16 @@ from environ import environ
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(DEBUG=(bool, False))
-
 environ.Env.read_env(BASE_DIR / ".env")
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = env("SECRET_KEY", cast=str, default="secret")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DEBUG")
+DEBUG = env("DEBUG", cast=bool, default=False)
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+# ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -28,7 +28,8 @@ INSTALLED_APPS = [
     # third-party
     "behaviors.apps.BehaviorsConfig",
     "rest_framework",
-    "minio_storage",
+    "cachalot",
+    "storages",
     # projects app
     "main",
     "users",
@@ -111,34 +112,41 @@ USE_TZ = True
 
 
 # Static files
-USE_S3 = env("USE_S3", bool)
+USE_S3 = env("USE_S3", cast=bool, default=False)
 if USE_S3:
     STORAGES = {
         "default": {
-            "BACKEND": "minio_storage.MinioMediaStorage",
+            "BACKEND": env(
+                "DEFAULT_FILE_STORAGE",
+                cast=str,
+                default="django.core.files.storage.FileSystemStorage",
+            ),
         },
         "staticfiles": {
-            "BACKEND": "minio_storage.MinioStaticStorage",
+            "BACKEND": env(
+                "STATICFILES_STORAGE",
+                cast=str,
+                default="django.contrib.staticfiles.storage.StaticFilesStorage",
+            ),
         },
     }
-    MINIO_STORAGE_ENDPOINT = env("MINIO_STORAGE_ENDPOINT")
-    MINIO_STORAGE_ACCESS_KEY = env("MINIO_ROOT_USER")
-    MINIO_STORAGE_SECRET_KEY = env("MINIO_ROOT_PASSWORD")
-    MINIO_STORAGE_MEDIA_BUCKET_NAME = "local-media"
-    MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET = True
-    MINIO_STORAGE_STATIC_BUCKET_NAME = "local-static"
-    MINIO_STORAGE_AUTO_CREATE_STATIC_BUCKET = True
-    MINIO_STORAGE_USE_HTTPS = env("MINIO_STORAGE_USE_HTTPS", bool)
-    PROTOCOL = "https" if MINIO_STORAGE_USE_HTTPS else "http"
 
-    STATIC_URL = (
-        f"{PROTOCOL}://{MINIO_STORAGE_ENDPOINT}/{MINIO_STORAGE_STATIC_BUCKET_NAME}/"
-    )
+    AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID", default=None)
+    AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY", default=None)
+    AWS_S3_ENDPOINT_URL = env("AWS_S3_ENDPOINT_URL", default=None)
+    AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN", default=None)
+    AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME", default=None)
+    AWS_S3_URL_PROTOCOL = env("AWS_S3_CUSTOM_DOMAIN_PROTOCOL", default="https:")
+
+    AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME", default=None)
+    AWS_DEFAULT_ACL = env("AWS_DEFAULT_ACL", default="public-read")
+
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_QUERYSTRING_AUTH = False
+
+    STATIC_URL = env("STATIC_URL", default="/local-static/")
     STATIC_ROOT = BASE_DIR / "staticfiles"
-
-    MEDIA_URL = (
-        f"{PROTOCOL}://{MINIO_STORAGE_ENDPOINT}/{MINIO_STORAGE_MEDIA_BUCKET_NAME}/"
-    )
+    MEDIA_URL = env("MEDIA_URL", default="/local-media/")
     MEDIA_ROOT = BASE_DIR / "mediafiles"
 else:
     STATIC_URL = "/staticfiles/"
@@ -175,7 +183,7 @@ if SECURITY_MODE == "prod":
     X_FRAME_OPTIONS = "DENY"
 
 # Mailing
-MAILING_MODE = env("MAILING_MODE")
+MAILING_MODE = env("MAILING_MODE", cast=str)
 # Testing Mailing
 if MAILING_MODE == "test":
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
@@ -184,10 +192,10 @@ if MAILING_MODE == "test":
 if MAILING_MODE == "prod":
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-    EMAIL_HOST = env("EMAIL_HOST")
-    EMAIL_PORT = env("EMAIL_PORT")
-    EMAIL_HOST_USER = env("EMAIL_HOST_USER")
-    EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+    EMAIL_HOST = env("EMAIL_HOST", cast=str)
+    EMAIL_PORT = env("EMAIL_PORT", cast=int)
+    EMAIL_HOST_USER = env("EMAIL_HOST_USER", cast=str)
+    EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", cast=str)
     if EMAIL_PORT == "587":
         EMAIL_USE_TLS = True
     if EMAIL_PORT == "465":
@@ -209,14 +217,21 @@ Configuration.configure(YOOKASSA_SHOP_ID, YOOKASSA_SECRET_KEY)
 
 
 if DEBUG:
-    INTERNAL_IPS = ["127.0.0.1"]
+    INTERNAL_IPS = ["127.0.0.1", "localhost"]
     INSTALLED_APPS += ("debug_toolbar",)
     MIDDLEWARE += (
         "debug_toolbar.middleware.DebugToolbarMiddleware",
         "debug_toolbar_force.middleware.ForceDebugToolbarMiddleware",
     )
-    LOGGING = {
-        "version": 1,
-        "handlers": {"console": {"class": "logging.StreamHandler"}},
-        "loggers": {"django.db.backends": {"handlers": ["console"], "level": "DEBUG"}},
-    }
+
+    # Uncomment if app in docker
+    # DEBUG_TOOLBAR_CONFIG = {
+    #     "SHOW_TOOLBAR_CALLBACK": lambda request: True,
+    #     "RENDER_PANELS": True,
+    # }
+
+    # LOGGING = {
+    #     "version": 1,
+    #     "handlers": {"console": {"class": "logging.StreamHandler"}},
+    #     "loggers": {"django.db.backends": {"handlers": ["console"], "level": "DEBUG"}},
+    # }

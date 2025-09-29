@@ -1,3 +1,5 @@
+manage = uv run python src/manage.py
+
 deps:
 	uv sync
 
@@ -6,19 +8,19 @@ lint:
 	mypy src
 	flake8 src
 
-prep:
-	cd src && python manage.py makemigrations
-	cd src && python manage.py migrate
-
 test:
-	cd src && pytest
+	cd src && uv run pytest
+
+prep:
+	$(manage) makemigrations
+	$(manage) migrate
 
 up:
 	cd src && uvicorn app.asgi:application --host 0.0.0.0 --port 8000
 
 up-prod:
-	cd src && python manage.py collectstatic --no-input
-	cd src && python manage.py migrate
+	$(manage) collectstatic --no-input
+	$(manage) migrate
 	cd src && uvicorn app.asgi:application --host 0.0.0.0 --port 8000
 
 build:

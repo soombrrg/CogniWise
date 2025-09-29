@@ -10,12 +10,14 @@ __pycache__
 
 postgres/
 minio/
+src/staticfiles/*
+
 
 .venv
 venv/
 storage/
 .vscode/
-tests/
+tests
 .mypy_cache/
 src/.mypy_cache/
 .pytest_cache/
