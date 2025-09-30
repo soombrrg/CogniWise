@@ -78,7 +78,7 @@
                                 <div class="prose prose-invert text-sm sm:text-base">{{ first_subblock.content | format_text | safe }}</div>
                             </div>
                         </div>
-                        <div hx-get="{% url 'main:load-next-content-with-subblock' course_id=course.id current_block_id=first_block.id current_subblock_id=first_subblock.id %}"
+                        <div hx-get="{% url 'main:load-next-content-from-subblock' course_id=course.id current_block_id=first_block.id current_subblock_id=first_subblock.id %}"
                              hx-trigger="revealed"
                              hx-swap="afterend">
                         </div>

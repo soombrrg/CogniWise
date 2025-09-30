@@ -56,3 +56,9 @@ class EmailForContactForm(forms.Form):
         if not re.match(r"^\+?1?\d{8,15}$", phone.replace(" ", "")):
             raise forms.ValidationError("Номер формата: +99999999999")
         return phone
+
+    def clean_tg_username(self):
+        tg_username = self.cleaned_data.get("tg_username")
+        if tg_username.replace(" ", "")[0] != "@":
+            raise forms.ValidationError("Нехватает @")
+        return tg_username

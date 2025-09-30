@@ -47,7 +47,7 @@ def get_course_first_content(course_id):
     )
 
     first_block = course.blocks.first()
-    first_subblock = first_block.subblocks.first()
+    first_subblock = first_block.subblocks.first() if first_block else None
     first_content = {
         "course": course,
         "first_block": first_block,

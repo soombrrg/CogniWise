@@ -31,6 +31,6 @@ urlpatterns = [
     path(
         "courses/<int:course_id>/load-next/<int:current_block_id>/<int:current_subblock_id>/",
         load_next_content_view,
-        name="load-next-content-with-subblock",
+        name="load-next-content-from-subblock",
     ),
 ]

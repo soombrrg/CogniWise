@@ -2,20 +2,25 @@ import boto3
 from botocore.config import Config
 from django.conf import settings
 from django.utils.functional import cached_property
-from rest_framework.test import APIClient
+from django.test import Client
 
 
 class AppClient:
     """Simulating User client API"""
 
     @cached_property
-    def api_client(self) -> APIClient:
-        return APIClient()
+    def client(self) -> Client:
+        return Client()
 
     def get(self, *args, expected_status_code=200, **kwargs):
-        result = self.api_client.get(*args, **kwargs)
+        result = self.client.get(*args, **kwargs)
+        assert result.status_code == expected_status_code
 
-        assert result.status_code == 200
+        return result
+
+    def post(self, *args, expected_status_code=200, **kwargs):
+        result = self.client.post(*args, **kwargs)
+        assert result.status_code == expected_status_code
 
         return result
 

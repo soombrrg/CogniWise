@@ -15,7 +15,9 @@ def purchase_required(view_func):
 
         if not purchase_status:
             course = get_object_or_404(Course, id=course_id)
-            return render(request, "main/access_denied.html", {"course": course})
+            return render(
+                request, "main/access_denied.html", {"course": course}, status=402
+            )
 
         return view_func(request, course_id, *args, **kwargs)
 

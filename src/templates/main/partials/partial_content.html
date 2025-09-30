@@ -17,7 +17,7 @@
 </div>
 {% if next_block_id %}
 <div hx-get="{% if next_subblock_id %}
-                {% url 'main:load-next-content-with-subblock' course_id=course_id current_block_id=next_block_id current_subblock_id=next_subblock_id %}
+                {% url 'main:load-next-content-from-subblock' course_id=course_id current_block_id=next_block_id current_subblock_id=next_subblock_id %}
               {% else %}
                 {% url 'main:load-next-content' course_id=course_id current_block_id=next_block_id %}
               {% endif %}"

@@ -5,7 +5,7 @@ from app.tests.test_clients import AppClient
 
 
 @pytest.fixture
-def api():
+def app():
     return AppClient()
 
 
