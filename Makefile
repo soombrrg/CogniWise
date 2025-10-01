@@ -5,6 +5,7 @@ deps:
 
 lint:
 	black src
+	isort src
 	mypy src
 	flake8 src
 

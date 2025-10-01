@@ -3,44 +3,13 @@ from unittest.mock import patch
 import pytest
 from django.urls import reverse
 from pytest_django.asserts import (
-    assertTemplateUsed,
     assertRedirects,
+    assertTemplateUsed,
 )
 
 from main.forms import EmailForContactForm
 
 pytestmark = [pytest.mark.django_db]
-
-
-@pytest.fixture
-def user(mixer):
-    return mixer.blend("users.CustomUser", email="user@mail.ru")
-
-
-@pytest.fixture
-def auth_user(mixer, user, app):
-    app.client.force_login(user)
-    return user
-
-
-@pytest.fixture
-def course(mixer):
-    return mixer.blend(
-        "main.Course",
-        title="Test Python Course",
-        description="Test Python Course Description",
-        price=22.5,
-    )
-
-
-@pytest.fixture
-def block(mixer, course):
-    return mixer.blend("main.Block", course=course, title="Test Block", order=1)
-
-
-@pytest.fixture
-def subblock(mixer, block):
-    return mixer.blend("main.SubBlock", block=block, title="Test SubBlock", order=1)
 
 
 def test_home_view(app):
@@ -90,7 +59,7 @@ class TestModalWindowsViews:
     )
     @patch("main.views.send_email_for_contact")
     def test_open_contact_post(self, mock_send_email_for_contact, data, validity, app):
-        """Test contact POST with valid/unvalid values"""
+        """Test contact POST with valid/invalid values"""
         response = app.post(reverse("main:modal-open-contact"), data=data)
 
         if validity:
@@ -144,13 +113,15 @@ class TestCoursesSearchView:
 class TestCoursesDetailView:
     def test_no_course(self, app, auth_user):
         response = app.get(
-            reverse("main:course-detail", args=[1]), expected_status_code=404
+            reverse("main:course-detail", args=[1]),
+            expected_status_code=404,
         )
 
     def test_login_required(self, app, course):
         """Test auth requirements"""
         response = app.get(
-            reverse("main:course-detail", args=[course.id]), expected_status_code=302
+            reverse("main:course-detail", args=[course.id]),
+            expected_status_code=302,
         )
         redirect_url = reverse("users:login") + f"?next=/courses/{course.id}/"
 
@@ -159,7 +130,8 @@ class TestCoursesDetailView:
     def test_access_denied(self, app, auth_user, course):
         """Test when course isn`t bought"""
         response = app.get(
-            reverse("main:course-detail", args=[course.id]), expected_status_code=402
+            reverse("main:course-detail", args=[course.id]),
+            expected_status_code=402,
         )
         assertTemplateUsed(response, "main/access_denied.html")
 

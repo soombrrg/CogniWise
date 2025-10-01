@@ -2,7 +2,6 @@ import logging
 
 import pytest
 
-
 from app.tests.test_clients import AppS3
 
 pytestmark = [pytest.mark.django_db]

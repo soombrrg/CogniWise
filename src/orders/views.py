@@ -1,6 +1,5 @@
 import json
 import logging
-from uuid import uuid4
 
 from django.conf import settings
 from django.contrib import messages
@@ -15,6 +14,9 @@ from main.models import Course
 from orders.models import Order
 from orders.services import (
     create_order,
+    create_yookassa_payment,
+    get_user_order_for_update,
+    get_user_order_or_404,
     is_purchased,
 )
 
@@ -27,16 +29,18 @@ handler.setFormatter(formatter)
 
 logger = logging.getLogger(__name__)
 logger.addHandler(handler)
+
 Configuration.account_id = settings.YOOKASSA_SHOP_ID
 Configuration.secret_key = settings.YOOKASSA_SECRET_KEY
 
 
 @login_required
-def checkout(request, course_id):
+def checkout_view(request, course_id):
+    """View for course buying"""
     course = get_object_or_404(Course, id=course_id)
 
     # Check if user already bought course
-    if is_purchased(request.user, course_id):
+    if is_purchased(request.user, course.id):
         return redirect("main:course-detail", course_id=course.id)
 
     course_price = course.price
@@ -61,60 +65,6 @@ def checkout(request, course_id):
         "orders/checkout.html",
         {"course": course, "total_price": course_price},
     )
-
-
-def create_yookassa_payment(order, request):
-    receipt_items = [
-        {
-            "description": f"Курс: {order.course.title}",
-            "quantity": "1",
-            "amount": {
-                "value": f"{order.total_price:.2f}",
-                "currency": "RUB",
-            },
-            "vat_code": getattr(settings, "YOOKASSA_VAT_CODE", 1),
-            "payment_mode": "full_payment",
-            "payment_subject": "commodity",
-        }
-    ]
-    customer = {"email": order.user.email}
-    discounted_total_rub = order.get_discounted_total_price()
-
-    try:
-        idempotence_key = str(uuid4())
-        payment = Payment.create(
-            {
-                "amount": {
-                    "value": f"{discounted_total_rub:.2f}",
-                    "currency": "RUB",
-                },
-                "confirmation": {
-                    "type": "redirect",
-                    "return_url": request.build_absolute_uri(
-                        "/orders/yookassa/success/"
-                    )
-                    + f"?order_id={order.id}",
-                },
-                "capture": True,
-                "description": f"Заказ #{order.id}",
-                "metadata": {
-                    "order_id": order.id,
-                    "user_id": order.user.id,
-                },
-                "receipt": {
-                    "customer": customer,
-                    "items": receipt_items,
-                },
-            },
-            idempotence_key,
-        )
-
-        order.yookassa_payment_id = payment.id
-        order.save()
-        return payment
-    except Exception as e:
-        logger.error("Ошибка при создании платежа ЮKassa: %s", str(e))
-        raise
 
 
 @csrf_exempt
@@ -148,7 +98,14 @@ def yookassa_webhook(request):
             )
             return HttpResponseBadRequest("Отсутствуют необходимые метаданные")
 
-        order = Order.objects.select_for_update().get(id=order_id, user_id=user_id)
+        order = get_user_order_for_update(user_id, order_id)
+
+        # Check if order already handled
+        if order.status in ["completed", "cancelled"]:
+            logger.info(
+                "Заказ %s уже имеет финальный статус: %s", order_id, order.status
+            )
+            return HttpResponse(status=200)
 
         if event_type == "payment.succeeded":
             if payment.get("status") == "succeeded":
@@ -179,20 +136,23 @@ def yookassa_webhook(request):
         return HttpResponse(status=500)
 
 
-def yookassa_success(request):
+@login_required
+def yookassa_payment_status_view(request):
+    """Success payment page, only for current user"""
     order_id = request.GET.get("order_id")
-    if not order_id:
+    if order_id is None:
         return redirect("main:home")
 
-    order = get_object_or_404(Order, id=order_id)
+    order = get_user_order_or_404(order_id, request.user)
 
     if order.status == "completed":
         messages.success(request, "Оплата прошла успешно! Доступ к курсу открыт.")
         return render(request, "orders/yookassa_success.html", {"order": order})
     elif order.status == "canceled":
-        return redirect("orders:yookassa_cancel")
+        messages.error(request, "Платеж был отменен.")
+        return render(request, "orders/yookassa_cancel.html", {"order": order})
 
-    if not order.yookassa_payment_id:
+    if order.yookassa_payment_id is None:
         return render(request, "orders/yookassa_pending.html", {"order": order})
 
     try:
@@ -205,18 +165,7 @@ def yookassa_success(request):
         elif payment.status in ["canceled", "failed"]:
             order.status = "canceled"
             order.save()
-            return redirect("orders:yookassa_cancel")
+            messages.error(request, "Платеж был отменен.")
+            return render(request, "orders/yookassa_cancel.html", {"order": order})
     except Exception as e:
         logger.error("Ошибка проверки платежа ЮKassa: %s", str(e))
-
-
-def yookassa_cancel(request):
-    order_id = request.GET.get("order_id")
-    if not order_id:
-        return redirect("orders: checkout")
-
-    order = get_object_or_404(Order, id=order_id)
-    order.status = "canceled"
-    order.save()
-    messages.error(request, "Платеж был отменен.")
-    return render(request, "orders/yookassa_cancel.html", {"order": order})

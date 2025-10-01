@@ -36,7 +36,7 @@ S3 should contain in static folder (local-static):
 ### Make commands
 Commands:
 - `make deps` - install/sync dependencies;
-- `make lint` - run **black, mypy, flake8**;
+- `make lint` - run **black, isort, mypy, flake8**;
 - `make test` - run **pytest** tests;
 - `make prep` - migrations;
 - `make build` - build docker image;

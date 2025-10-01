@@ -1,8 +1,8 @@
 import boto3
 from botocore.config import Config
 from django.conf import settings
-from django.utils.functional import cached_property
 from django.test import Client
+from django.utils.functional import cached_property
 
 
 class AppClient:
