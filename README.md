@@ -2,25 +2,32 @@
 **CogniWise** - Full-stack platform for selling online courses, featuring integrated payment system *YooMoney*. 
 
 **Tech Stack**: 
-- **Backend**: Django, PostgreSQL, Redis;
+- **Backend**: Django, PostgreSQL, Redis (caching);
 - **Frontend**: HTMX, TailwindCSS, AlpineJS;
 - **Storage**: MinIO (S3-compatible) for static and media.
+
+Optimized page rendreing through partitial template rendering using HTMX.
+
+Led to minimum amount of request to db using debug_toolbar and django-cachalot caching.
+
+For each view were writtern tests using pytest, mock and mixer (generating fake data).
 
 ## How to run
 ### Prerequisites
 - Docker and Docker Compose;
-- Python 3.13+, UV;
-- Make
+- Python 3.13+;
+- UV package manager;
+- Make.
 
-### App 
+### Quick Start
 Step-by-step:
 - `cp .env.example src/.env`;
 - `make deps`
 - `compose up` - for db, cache, s3 containers running
 - `make prep` - migrations
-- `make up`
+- `make up-prod`
 
-### App in Docker
+### Full containerized
 When using **django-app** as **docker** container:
 - `cp .env.docker_example src/.env`;
 - `make build`
@@ -32,6 +39,9 @@ S3 should contain in static folder (local-static):
 - *covers/default_cover* (for courses)
 - *avatars/default_avatar* (for users).
 - *favicon.ico* (optional).
+
+## Filling down course content
+Course blocks and subblocks should be writen using markdown. (check course-content-example/)
 
 ### Make commands
 Commands:
@@ -62,4 +72,3 @@ Use *local* ip (*192.168.100.xx*) to access django-app and s3:
 - `/` - django app.
 - `/s3/ui/` - minio **ui** interface;
 - `/s3/api/` - minio **api** interface;
-
