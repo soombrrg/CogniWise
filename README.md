@@ -1,16 +1,18 @@
 # CogniWise
-**CogniWise** - Full-stack platform for selling online courses, featuring integrated payment system *YooMoney*. 
+**CogniWise** - Full-stack platform for reading/buying online courses. 
+**Featuring**: user profile management, Markdown-like formated courses content, integrated payment system *YooMoney*g. 
+
 
 **Tech Stack**: 
 - **Backend**: Django, PostgreSQL, Redis (caching);
 - **Frontend**: HTMX, TailwindCSS, AlpineJS;
 - **Storage**: MinIO (S3-compatible) for static and media.
 
-Optimized page rendreing through partitial template rendering using HTMX.
+Optimized page rendering through partial template rendering using **HTMX**.
 
-Led to minimum amount of request to db using debug_toolbar and django-cachalot caching.
+Led to minimum amount of request to db using **django-debug-toolbar** and **django-cachalot** caching.
 
-For each view were writtern tests using pytest, mock and mixer (generating fake data).
+For each view were written tests using **pytest**, **mock** and **mixer** (generating fake data).
 
 ## How to run
 ### Prerequisites
