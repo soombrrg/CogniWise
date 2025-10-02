@@ -9,6 +9,7 @@ from orders.models import Order
 pytestmark = [pytest.mark.django_db]
 
 
+@pytest.mark.auth_req
 class TestCheckoutView:
     def test_login_required(self, app, course):
         """Test login redirect, on unauthenticated user"""
@@ -82,6 +83,7 @@ class TestCheckoutView:
         assert response.url == mock_payment.confirmation.confirmation_url
 
 
+@pytest.mark.auth_req
 @pytest.mark.parametrize("part", ["success", "cancel"])
 class TestYookassaPaymentStatusView:
     def test_login_required(self, app, part):

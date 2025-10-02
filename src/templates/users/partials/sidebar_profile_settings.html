@@ -18,7 +18,7 @@
                 <i class="fas fa-spinner fa-spin text-emerald-300"></i>
             </span>
         </button>
-        <button hx-get="{% url 'users:password_change' %}" hx-target="#content-profile" hx-swap="innerHTML" hx-indicator="#spinner2" class="flex items-center px-3 py-2 text-slate-300 hover:text-emerald-300 hover:bg-slate-700/50 rounded-lg transition duration-300">
+        <button hx-get="{% url 'users:password-change' %}" hx-target="#content-profile" hx-swap="innerHTML" hx-indicator="#spinner2" class="flex items-center px-3 py-2 text-slate-300 hover:text-emerald-300 hover:bg-slate-700/50 rounded-lg transition duration-300">
             <i class="fas fa-lock mr-3 w-5"></i>
             Сменить пароль
             <span id="spinner2" class="htmx-indicator ml-2">

@@ -43,3 +43,8 @@ def block(mixer, course):
 @pytest.fixture
 def subblock(mixer, block):
     return mixer.blend("main.SubBlock", block=block, title="Test SubBlock", order=1)
+
+
+@pytest.fixture
+def order(mixer, user, course):
+    return mixer.blend("orders.Order", user=user, course=course, status="completed")

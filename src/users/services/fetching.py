@@ -30,13 +30,14 @@ def get_user_profile_data(user):
         .select_related("course")
         .only("created_at", "total_price", "status", "course__title")
         .all()
+        .order_by("-created_at")
     )
 
     completed_course = [
         order.course for order in user_orders if order.status == "completed"
     ]
 
-    courses_cover = (
+    courses_covers = (
         CourseProfile.objects.filter(course__in=completed_course)
         .select_related("course")
         .only("cover", "course__title")
@@ -45,6 +46,6 @@ def get_user_profile_data(user):
 
     user_profile_data = {
         "user_orders": user_orders,
-        "courses_cover": courses_cover,
+        "courses_covers": courses_covers,
     }
     return user_profile_data

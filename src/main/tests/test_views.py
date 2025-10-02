@@ -23,12 +23,17 @@ def test_about_view(app):
 
 
 class TestModalWindowsViews:
+    def test_close(self, app):
+        response = app.get(reverse("main:modal-close"))
+        assert response.content.decode() == '<div id="modal"></div>'
+
     def test_open_demo(self, app):
+        """Test contact demo window rendering"""
         response = app.get(reverse("main:modal-open-demo"))
         assertTemplateUsed(response, "main/partials/modal_demo.html")
 
     def test_open_contact_get(self, app):
-        """Test contact modal shows form on GET"""
+        """Test contact modal window rendering form on GET"""
         response = app.get(reverse("main:modal-open-contact"))
 
         assert isinstance(response.context["form"], EmailForContactForm)
@@ -69,13 +74,10 @@ class TestModalWindowsViews:
             assert isinstance(response.context["form"], EmailForContactForm)
             assertTemplateUsed(response, "main/partials/modal_contact.html")
 
-    def test_close(self, app):
-        response = app.get(reverse("main:modal-close"))
-        assert response.content.decode() == '<div id="modal"></div>'
-
 
 class TestCoursesListView:
-    def test_courses_list_view(self, app, course):
+    def test_with_courses(self, app, course):
+        """Test rendering list of courses"""
         response = app.get(reverse("main:courses-list"))
         assert course in response.context["courses"]
         assert (
@@ -83,7 +85,8 @@ class TestCoursesListView:
             in response.context["courses"][0].course_profile.cover.url
         )
 
-    def test_courses_list_no_courses_view(self, app):
+    def test_without_courses(self, app):
+        """Test rendering msg, when without courses"""
         response = app.get(reverse("main:courses-list"))
         msg = "Курсы пока не добавлены"
         assert msg in response.content.decode()
@@ -98,11 +101,13 @@ class TestCoursesSearchView:
             pytest.param({"query": "NotExist"}, marks=pytest.mark.xfail),
         ],
     )
-    def test_courses_search_query_view(self, app, course, query_dict):
+    def test_query(self, app, course, query_dict):
+        """Test rendering list of courses using query"""
         response = app.get(reverse("main:courses-search"), query_dict)
         assert course in response.context["courses"]
 
-    def test_courses_search_query_no_courses_view(self, app):
+    def test_without_courses(self, app):
+        """Test rendering msg, when without courses"""
         response = app.get(reverse("main:courses-search"))
         msg = "Курсы пока не добавлены"
         assert msg in response.content.decode()
@@ -112,13 +117,14 @@ class TestCoursesSearchView:
 @pytest.mark.purchase_req
 class TestCoursesDetailView:
     def test_no_course(self, app, auth_user):
+        """Test 404 error when no course is found"""
         response = app.get(
             reverse("main:course-detail", args=[1]),
             expected_status_code=404,
         )
 
     def test_login_required(self, app, course):
-        """Test auth requirements"""
+        """Test login redirect, on unauthenticated user"""
         response = app.get(
             reverse("main:course-detail", args=[course.id]),
             expected_status_code=302,
@@ -139,7 +145,7 @@ class TestCoursesDetailView:
     def test_purchased(
         self, mock_is_purchased, app, auth_user, course, block, subblock
     ):
-        """Test when course is bought"""
+        """Test when course is bought and content exist"""
         mock_is_purchased.return_value = True
 
         response = app.get(reverse("main:course-detail", args=[course.id]))

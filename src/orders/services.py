@@ -4,7 +4,6 @@ from uuid import uuid4
 from django.conf import settings
 from django.core.cache import cache
 from django.http import Http404
-from django.shortcuts import get_object_or_404
 from yookassa import Payment
 
 from orders.models import Order
@@ -45,10 +44,17 @@ def create_order(user, course, price, status) -> Order:
 
 
 def get_user_order_or_404(order_id, user):
-    order = get_object_or_404(Order, id=order_id)
-    if order.user != user:
+    try:
+        order = (
+            Order.objects.select_related("course")
+            .only("status", "user_id", "course__title")
+            .get(id=order_id)
+        )
+        if order.user != user:
+            raise Http404("Заказ не найден")
+        return order
+    except Order.DoesNotExist:
         raise Http404("Заказ не найден")
-    return order
 
 
 def get_user_order_for_update(order_id, user_id):

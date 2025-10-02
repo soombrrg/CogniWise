@@ -28,7 +28,7 @@ urlpatterns = [
 urlpatterns += [
     path("profile/", profile_view, name="profile"),
     path("profile-partial/", profile_partial_view, name="profile-partial"),
-    path("password-change/", password_change_view, name="password_change"),
+    path("password-change/", password_change_view, name="password-change"),
     path(
         "edit-account-details/",
         edit_account_details_view,
