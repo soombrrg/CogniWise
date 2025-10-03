@@ -27,7 +27,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # third-party
     "behaviors.apps.BehaviorsConfig",
-    "rest_framework",
     "cachalot",
     "storages",
     # projects app
