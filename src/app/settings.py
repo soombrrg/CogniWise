@@ -15,7 +15,7 @@ SECRET_KEY = env("SECRET_KEY", cast=str, default="secret")
 DEBUG = env("DEBUG", cast=bool, default=False)
 
 # ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
-ALLOWED_HOSTS = env("ALLOWED_HOSTS", cast=list[str], default=["localhost", "127.0.0.1"])
+ALLOWED_HOSTS = env("ALLOWED_HOSTS", cast=str, default="localhost,127.0.0.1").split(",")
 
 # Application definition
 INSTALLED_APPS = [
